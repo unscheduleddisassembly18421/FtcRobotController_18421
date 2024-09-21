@@ -30,6 +30,7 @@ import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
@@ -178,6 +179,10 @@ public class StoneOrientationExample extends LinearOpMode
             MASK,
             MASK_NR,
             CONTOURS;
+
+            public Mat submat(Rect rect) {
+                return null;
+            }
         }
 
         Stage[] stages = Stage.values();
