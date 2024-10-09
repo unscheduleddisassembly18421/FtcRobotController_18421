@@ -45,8 +45,8 @@ public class ColorConvertPipeline extends OpenCvPipeline {
         Imgproc.cvtColor(input,GRAY,Imgproc.COLOR_RGB2GRAY);
         Imgproc.cvtColor(input,HSV,Imgproc.COLOR_RGB2HSV);
         Imgproc.cvtColor(input,YCrCb,Imgproc.COLOR_RGB2YCrCb);
-        //Core.invert(HSV,HSVInvert);
-        //Core.invert(YCrCb,YCrCbInvert);
+        Core.invert(HSV,HSVInvert);
+        Core.invert(YCrCb,YCrCbInvert);
         Core.extractChannel(YCrCb,Y,0);
         Core.extractChannel(YCrCb,Cr,1);
         Core.extractChannel(YCrCb,Cb,2);

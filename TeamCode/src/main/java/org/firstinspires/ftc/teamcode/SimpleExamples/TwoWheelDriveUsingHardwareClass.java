@@ -44,7 +44,6 @@ public class TwoWheelDriveUsingHardwareClass extends OpMode
         double drive = -gamepad1.left_stick_y;
         double turn  =  gamepad1.right_stick_x;
         boolean inSlowMode = gamepad1.right_bumper;
-
         robot.driveRobot(drive,turn, inSlowMode);
 
         // Show the elapsed game time and wheel power.
