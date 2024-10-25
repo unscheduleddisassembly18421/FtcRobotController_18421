@@ -40,6 +40,7 @@ public class AutonomousSelectorExample extends LinearOpMode {
         switch(autoSelector){
             case BLUE:
                 //blue code goes here
+
                 break;
             case RED:
                 //red code goes here

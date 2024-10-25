@@ -62,11 +62,6 @@ public class BasicDriverControl extends OpMode
         //leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         telemetry.addData("Status", "Initialized");
-
-    }
-
-    @Override
-    public void init_loop() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -76,6 +71,11 @@ public class BasicDriverControl extends OpMode
 
         telemetry.addData("Lift Position", slideMotor.getCurrentPosition());
         telemetry.addData("Status", "Initialized");
+    }
+
+    @Override
+    public void init_loop() {
+
     }
 
     @Override
