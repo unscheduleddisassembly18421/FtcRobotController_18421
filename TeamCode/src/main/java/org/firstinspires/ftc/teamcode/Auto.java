@@ -12,29 +12,28 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
-import org.firstinspires.ftc.teamcode.SimpleExamples.AutonomousSelectorExample;
 
 @Config
 
-@Autonomous
+@Autonomous(name = "Autonomous2024-2025")
 public class Auto extends LinearOpMode {
+
     private static final double SELECTOR_DELAY_TIME = 500;
-    private ElapsedTime runtime = new ElapsedTime();
-    public enum AutoSelector {BLUE_BASKET,RED_BASKET,BLUE_OBZ,RED_OBZ}
+    private final ElapsedTime runtime = new ElapsedTime();
+    public enum AutoSelector {BLUE_BASKET,RED_BASKET,BLUE_OBZ,RED_OBZ,BLUE_MID}
     public AutoSelector autoSelector = AutoSelector.BLUE_BASKET;
 
     @Override
     public void runOpMode() throws InterruptedException {
+
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-
         while(opModeInInit()){
             double time = runtime.milliseconds();
-            if(((gamepad1.dpad_down) && (autoSelector == AutoSelector.RED_OBZ) && (time > SELECTOR_DELAY_TIME)) ||
+            if(((gamepad1.dpad_down) && (autoSelector == AutoSelector.BLUE_MID) && (time > SELECTOR_DELAY_TIME)) ||
                     ((gamepad1.dpad_up) && (autoSelector == AutoSelector.RED_BASKET) && (time > SELECTOR_DELAY_TIME))){
                 autoSelector = AutoSelector.BLUE_BASKET;
                 runtime.reset();
@@ -50,8 +49,13 @@ public class Auto extends LinearOpMode {
                 runtime.reset();
             }
             else if(((gamepad1.dpad_down) && (autoSelector == AutoSelector.BLUE_OBZ) && (time > SELECTOR_DELAY_TIME)) ||
-                    ((gamepad1.dpad_up) && (autoSelector == AutoSelector.BLUE_BASKET) && (time > SELECTOR_DELAY_TIME))){
+                    ((gamepad1.dpad_up) && (autoSelector == AutoSelector.BLUE_MID) && (time > SELECTOR_DELAY_TIME))){
                 autoSelector = AutoSelector.RED_OBZ;
+                runtime.reset();
+            }
+            else if(((gamepad1.dpad_down) && (autoSelector == AutoSelector.RED_OBZ) && (time > SELECTOR_DELAY_TIME)) ||
+                    ((gamepad1.dpad_up) && (autoSelector == AutoSelector.BLUE_BASKET) && (time > SELECTOR_DELAY_TIME))){
+                autoSelector = AutoSelector.BLUE_MID;
                 runtime.reset();
             }
         }
@@ -65,6 +69,9 @@ public class Auto extends LinearOpMode {
         else if(autoSelector == AutoSelector.RED_BASKET){
             initialPose = new Pose2d(-36,-65.25,Math.toRadians(90));
         }
+        else if(autoSelector == AutoSelector.BLUE_MID) {
+            initialPose = new Pose2d(0, 65.25, Math.toRadians(270));
+        }
         else{
             initialPose = new Pose2d(12,-65.25,Math.toRadians(90));
         }
@@ -74,20 +81,20 @@ public class Auto extends LinearOpMode {
 
         TrajectoryActionBuilder action0_0 = drive.actionBuilder(initialPose)
                 .splineTo(new Vector2d(-6,-38),Math.toRadians(90));
-        TrajectoryActionBuilder action1_0 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action0_1 = drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(Math.toRadians(0)))
                 .lineToXSplineHeading(-48,Math.toRadians(270));
-        TrajectoryActionBuilder action2_0 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action0_2 = drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(-90))
                 .splineTo(new Vector2d(-56,-56),Math.toRadians(225));
-        TrajectoryActionBuilder action3_0 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action0_3 = drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(90))
                 .lineToYSplineHeading(-38,Math.toRadians(-90));
-        Action basketTwo = action0_0.fresh()
+        Action basketTwo_0 = action0_0.fresh()
                 .lineToYSplineHeading(-56,Math.toRadians(225))
                 .build();
 
-        TrajectoryActionBuilder action0_1 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action1_0 = drive.actionBuilder(initialPose)
                 .splineTo(new Vector2d(-6,38),Math.toRadians(270));
         TrajectoryActionBuilder action1_1 = drive.actionBuilder(initialPose)
                 .setTangent(0)
@@ -98,9 +105,55 @@ public class Auto extends LinearOpMode {
         TrajectoryActionBuilder action1_3 = drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(245))
                 .lineToY(38);
-        Action Obz2 = action0_1.fresh()
+        Action Obz2_0 = action0_1.fresh()
                 .setTangent(Math.toRadians(90))
                 .lineToY(56)
+                .build();
+
+        TrajectoryActionBuilder action2_0 = drive.actionBuilder(initialPose)
+                .splineTo(new Vector2d(-6,-38),Math.toRadians(90));
+        TrajectoryActionBuilder action2_1 = drive.actionBuilder(initialPose)
+                .setTangent(Math.toRadians(Math.toRadians(0)))
+                .lineToXSplineHeading(-48,Math.toRadians(270));
+        TrajectoryActionBuilder action2_2 = drive.actionBuilder(initialPose)
+                .setTangent(Math.toRadians(-90))
+                .splineTo(new Vector2d(-56,-56),Math.toRadians(225));
+        TrajectoryActionBuilder action2_3 = drive.actionBuilder(initialPose)
+                .setTangent(Math.toRadians(90))
+                .lineToYSplineHeading(-38,Math.toRadians(-90));
+        Action basketTwo_1 = action2_0.fresh()
+                .lineToYSplineHeading(-56,Math.toRadians(225))
+                .build();
+
+        TrajectoryActionBuilder action3_0 = drive.actionBuilder(initialPose)
+                .splineTo(new Vector2d(6,-38),Math.toRadians(90));
+        TrajectoryActionBuilder action3_1 = drive.actionBuilder(initialPose)
+                .setTangent(0)
+                .lineToXSplineHeading(48,Math.toRadians(270));
+        TrajectoryActionBuilder action3_2 = drive.actionBuilder(initialPose)
+                .setTangent(Math.toRadians(-90))
+                .lineToY(-56);
+        TrajectoryActionBuilder action3_3 = drive.actionBuilder(initialPose)
+                .setTangent(Math.toRadians(65))
+                .lineToY(-38);
+        Action Obz2_1 = action3_0.fresh()
+                .setTangent(Math.toRadians(90))
+                .lineToY(-56)
+                .build();
+
+        TrajectoryActionBuilder action4_0 = drive.actionBuilder(initialPose)
+                .splineTo(new Vector2d(-6,-38),Math.toRadians(90));
+        TrajectoryActionBuilder action4_1 = drive.actionBuilder(initialPose)
+                .setTangent(Math.toRadians(Math.toRadians(0)))
+                .lineToXSplineHeading(-48,Math.toRadians(270));
+        TrajectoryActionBuilder action4_2 = drive.actionBuilder(initialPose)
+                .setTangent(Math.toRadians(-90))
+                .splineTo(new Vector2d(-56,-56),Math.toRadians(225));
+        TrajectoryActionBuilder action4_3 = drive.actionBuilder(initialPose)
+                .setTangent(Math.toRadians(90))
+                .lineToYSplineHeading(-38,Math.toRadians(-90));
+        Action basketTwo_2 = action4_0.fresh()
+                .lineToYSplineHeading(-56,Math.toRadians(225))
                 .build();
 
         telemetry.addData("Current Auto Selected", autoSelector);
@@ -119,47 +172,109 @@ public class Auto extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        Action submersible0;
-        Action spikeOne0;
-        Action basketOne;
-        Action spikeTwo;
+        Action submersible_0;
+        Action spikeOne_0;
+        Action basketOne_0;
+        Action spikeTwo_0;
 
-        Action submersible1;
-        Action spikeOne1;
-        Action Obz1;
-        Action spikeTwo1;
+        Action submersible_1;
+        Action spikeOne_1;
+        Action Obz1_0;
+        Action spikeTwo_1;
 
-        submersible0 = action0_0.build();
-        spikeOne0 = action1_0.build();
-        basketOne = action2_0.build();
-        spikeTwo = action3_0.build();
+        Action submersible_2;
+        Action spikeOne_2;
+        Action basketOne_1;
+        Action spikeTwo_2;
 
-        submersible1 = action1_0.build();
-        spikeOne1 = action1_1.build();
-        Obz1 = action1_2.build();
-        spikeTwo1 = action1_3.build();
+        Action submersible_3;
+        Action spikeOne_3;
+        Action Obz1_1;
+        Action spikeTwo_3;
 
+        Action submersible_4;
+        Action spikeOne_4;
+        Action basketOne_2;
+        Action spikeTwo_4;
+
+        submersible_0 = action0_0.build();
+        spikeOne_0 = action0_1.build();
+        basketOne_0 = action0_2.build();
+        spikeTwo_0 = action0_3.build();
+
+        submersible_1 = action1_0.build();
+        spikeOne_1 = action1_1.build();
+        Obz1_0 = action1_2.build();
+        spikeTwo_1 = action1_3.build();
+
+        submersible_2 = action2_0.build();
+        spikeOne_2 = action2_1.build();
+        basketOne_1 = action2_2.build();
+        spikeTwo_2 = action2_3.build();
+
+        submersible_3 = action3_0.build();
+        spikeOne_3 = action3_1.build();
+        Obz1_1 = action3_2.build();
+        spikeTwo_3 = action3_3.build();
+
+        submersible_4 = action4_0.build();
+        spikeOne_4 = action4_1.build();
+        basketOne_2 = action4_2.build();
+        spikeTwo_4 = action4_3.build();
 
         //run code
         if(autoSelector == AutoSelector.BLUE_BASKET) {
             Actions.runBlocking(
                     new SequentialAction(
-                            submersible0,
-                            spikeOne0,
-                            basketOne,
-                            spikeTwo,
-                            basketTwo
+                            submersible_0,
+                            spikeOne_0,
+                            basketOne_0,
+                            spikeTwo_0,
+                            basketTwo_0
                     )
             );
         }
         else if(autoSelector == AutoSelector.BLUE_OBZ) {
             Actions.runBlocking(
                     new SequentialAction(
-                            submersible1,
-                            spikeOne1,
-                            Obz1,
-                            spikeTwo1,
-                            Obz2
+                            submersible_1,
+                            spikeOne_1,
+                            Obz1_0,
+                            spikeTwo_1,
+                            Obz2_0
+                    )
+            );
+        }
+        else if(autoSelector == AutoSelector.RED_BASKET) {
+            Actions.runBlocking(
+                    new SequentialAction(
+                            submersible_2,
+                            spikeOne_2,
+                            basketOne_1,
+                            spikeTwo_2,
+                            basketTwo_1
+                    )
+            );
+        }
+        else if(autoSelector == AutoSelector.RED_OBZ) {
+            Actions.runBlocking(
+                    new SequentialAction(
+                            submersible_3,
+                            spikeOne_3,
+                            Obz1_1,
+                            spikeTwo_3,
+                            Obz2_1
+                    )
+            );
+        }
+        else if(autoSelector == AutoSelector.BLUE_MID) {
+            Actions.runBlocking(
+                    new SequentialAction(
+                            submersible_4,
+                            spikeOne_4,
+                            basketOne_2,
+                            spikeTwo_4,
+                            basketTwo_2
                     )
             );
         }
