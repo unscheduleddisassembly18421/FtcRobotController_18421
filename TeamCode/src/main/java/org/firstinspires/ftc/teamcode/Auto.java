@@ -21,7 +21,7 @@ public class Auto extends LinearOpMode {
 
     private static final double SELECTOR_DELAY_TIME = 500;
     private final ElapsedTime runtime = new ElapsedTime();
-    public enum AutoSelector {BLUE_BASKET,RED_BASKET,BLUE_OBZ,RED_OBZ,BLUE_MID}
+    public enum AutoSelector {BLUE_BASKET,RED_BASKET,BLUE_OBZ,RED_OBZ,BLUE_MID,RED_MID}
     public AutoSelector autoSelector = AutoSelector.BLUE_BASKET;
 
     @Override
@@ -33,7 +33,7 @@ public class Auto extends LinearOpMode {
 
         while(opModeInInit()){
             double time = runtime.milliseconds();
-            if(((gamepad1.dpad_down) && (autoSelector == AutoSelector.BLUE_MID) && (time > SELECTOR_DELAY_TIME)) ||
+            if(((gamepad1.dpad_down) && (autoSelector == AutoSelector.RED_MID) && (time > SELECTOR_DELAY_TIME)) ||
                     ((gamepad1.dpad_up) && (autoSelector == AutoSelector.RED_BASKET) && (time > SELECTOR_DELAY_TIME))){
                 autoSelector = AutoSelector.BLUE_BASKET;
                 runtime.reset();
@@ -54,8 +54,13 @@ public class Auto extends LinearOpMode {
                 runtime.reset();
             }
             else if(((gamepad1.dpad_down) && (autoSelector == AutoSelector.RED_OBZ) && (time > SELECTOR_DELAY_TIME)) ||
-                    ((gamepad1.dpad_up) && (autoSelector == AutoSelector.BLUE_BASKET) && (time > SELECTOR_DELAY_TIME))){
+                    ((gamepad1.dpad_up) && (autoSelector == AutoSelector.RED_MID) && (time > SELECTOR_DELAY_TIME))){
                 autoSelector = AutoSelector.BLUE_MID;
+                runtime.reset();
+            }
+            else if(((gamepad1.dpad_down) && (autoSelector == AutoSelector.BLUE_MID) && (time > SELECTOR_DELAY_TIME)) ||
+                ((gamepad1.dpad_up) && (autoSelector == AutoSelector.BLUE_BASKET) && (time > SELECTOR_DELAY_TIME))) {
+                autoSelector = AutoSelector.RED_MID;
                 runtime.reset();
             }
         }
@@ -69,11 +74,15 @@ public class Auto extends LinearOpMode {
         else if(autoSelector == AutoSelector.RED_BASKET){
             initialPose = new Pose2d(-36,-65.25,Math.toRadians(90));
         }
+        else if(autoSelector == AutoSelector.RED_OBZ){
+            initialPose = new Pose2d(12,-65.25,Math.toRadians(90));
+        }
         else if(autoSelector == AutoSelector.BLUE_MID) {
             initialPose = new Pose2d(0, 65.25, Math.toRadians(270));
         }
-        else{
-            initialPose = new Pose2d(12,-65.25,Math.toRadians(90));
+        // red mid just so you know ;)
+        else {
+            initialPose = new Pose2d(0,-65.5,Math.toRadians(90));
         }
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
@@ -156,6 +165,23 @@ public class Auto extends LinearOpMode {
                 .lineToYSplineHeading(-56,Math.toRadians(225))
                 .build();
 
+        TrajectoryActionBuilder action5_0 = drive.actionBuilder(initialPose)
+                .splineTo(new Vector2d(-6,-38),Math.toRadians(90));
+        TrajectoryActionBuilder action5_1 = drive.actionBuilder(initialPose)
+                .setTangent(Math.toRadians(Math.toRadians(0)))
+                .lineToXSplineHeading(-48,Math.toRadians(270));
+        TrajectoryActionBuilder action5_2 = drive.actionBuilder(initialPose)
+                .setTangent(Math.toRadians(-90))
+                .splineTo(new Vector2d(-56,-56),Math.toRadians(225));
+        TrajectoryActionBuilder action5_3 = drive.actionBuilder(initialPose)
+                .setTangent(Math.toRadians(90))
+                .lineToYSplineHeading(-38,Math.toRadians(-90));
+        Action basketTwo_3 = action2_0.fresh()
+                .lineToYSplineHeading(-56,Math.toRadians(225))
+                .build();
+
+
+
         telemetry.addData("Current Auto Selected", autoSelector);
         telemetry.addData("Runtime", runtime.seconds());
         telemetry.update();
@@ -197,6 +223,11 @@ public class Auto extends LinearOpMode {
         Action basketOne_2;
         Action spikeTwo_4;
 
+        Action submersible_5;
+        Action spikeOne_5;
+        Action basketOne_3;
+        Action spikeTwo_5;
+
         submersible_0 = action0_0.build();
         spikeOne_0 = action0_1.build();
         basketOne_0 = action0_2.build();
@@ -221,6 +252,11 @@ public class Auto extends LinearOpMode {
         spikeOne_4 = action4_1.build();
         basketOne_2 = action4_2.build();
         spikeTwo_4 = action4_3.build();
+
+        submersible_5 = action5_0.build();
+        spikeOne_5 = action5_1.build();
+        basketOne_3 = action5_2.build();
+        spikeTwo_5 = action5_3.build();
 
         //run code
         if(autoSelector == AutoSelector.BLUE_BASKET) {
@@ -275,6 +311,17 @@ public class Auto extends LinearOpMode {
                             basketOne_2,
                             spikeTwo_4,
                             basketTwo_2
+                    )
+            );
+        }
+        else if(autoSelector == AutoSelector.RED_MID) {
+            Actions.runBlocking(
+                    new SequentialAction(
+                            submersible_5,
+                            spikeOne_5,
+                            basketOne_3,
+                            spikeTwo_5,
+                            basketTwo_3
                     )
             );
         }
