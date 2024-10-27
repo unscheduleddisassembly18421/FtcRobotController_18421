@@ -34,27 +34,27 @@ public class Auto extends LinearOpMode {
         while(opModeInInit()){
             double time = runtime.milliseconds();
             if(((gamepad1.dpad_down) && (autoSelector == AutoSelector.RED_MID) && (time > SELECTOR_DELAY_TIME)) ||
-                    ((gamepad1.dpad_up) && (autoSelector == AutoSelector.RED_BASKET) && (time > SELECTOR_DELAY_TIME))){
+                    ((gamepad1.dpad_up) && (autoSelector == AutoSelector.RED_BASKET) && (time > SELECTOR_DELAY_TIME))) {
                 autoSelector = AutoSelector.BLUE_BASKET;
                 runtime.reset();
             }
             else if(((gamepad1.dpad_down) && (autoSelector == AutoSelector.BLUE_BASKET) && (time > SELECTOR_DELAY_TIME)) ||
-                ((gamepad1.dpad_up) && (autoSelector == AutoSelector.BLUE_OBZ) && (time > SELECTOR_DELAY_TIME))){
+                ((gamepad1.dpad_up) && (autoSelector == AutoSelector.BLUE_OBZ) && (time > SELECTOR_DELAY_TIME))) {
                 autoSelector = AutoSelector.RED_BASKET;
                 runtime.reset();
             }
             else if(((gamepad1.dpad_down) && (autoSelector == AutoSelector.RED_BASKET) && (time > SELECTOR_DELAY_TIME)) ||
-                    ((gamepad1.dpad_up) && (autoSelector == AutoSelector.RED_OBZ) && (time > SELECTOR_DELAY_TIME))){
+                    ((gamepad1.dpad_up) && (autoSelector == AutoSelector.RED_OBZ) && (time > SELECTOR_DELAY_TIME))) {
                 autoSelector = AutoSelector.BLUE_OBZ;
                 runtime.reset();
             }
             else if(((gamepad1.dpad_down) && (autoSelector == AutoSelector.BLUE_OBZ) && (time > SELECTOR_DELAY_TIME)) ||
-                    ((gamepad1.dpad_up) && (autoSelector == AutoSelector.BLUE_MID) && (time > SELECTOR_DELAY_TIME))){
+                    ((gamepad1.dpad_up) && (autoSelector == AutoSelector.BLUE_MID) && (time > SELECTOR_DELAY_TIME))) {
                 autoSelector = AutoSelector.RED_OBZ;
                 runtime.reset();
             }
             else if(((gamepad1.dpad_down) && (autoSelector == AutoSelector.RED_OBZ) && (time > SELECTOR_DELAY_TIME)) ||
-                    ((gamepad1.dpad_up) && (autoSelector == AutoSelector.RED_MID) && (time > SELECTOR_DELAY_TIME))){
+                    ((gamepad1.dpad_up) && (autoSelector == AutoSelector.RED_MID) && (time > SELECTOR_DELAY_TIME))) {
                 autoSelector = AutoSelector.BLUE_MID;
                 runtime.reset();
             }
@@ -65,16 +65,16 @@ public class Auto extends LinearOpMode {
             }
         }
         Pose2d initialPose;
-        if(autoSelector == AutoSelector.BLUE_BASKET){
+        if(autoSelector == AutoSelector.BLUE_BASKET) {
             initialPose = new Pose2d(36, 65.25, Math.toRadians(270));
         }
-        else if(autoSelector == AutoSelector.BLUE_OBZ){
+        else if(autoSelector == AutoSelector.BLUE_OBZ) {
             initialPose = new Pose2d(-12,65.25, Math.toRadians(270));
         }
-        else if(autoSelector == AutoSelector.RED_BASKET){
+        else if(autoSelector == AutoSelector.RED_BASKET) {
             initialPose = new Pose2d(-36,-65.25,Math.toRadians(90));
         }
-        else if(autoSelector == AutoSelector.RED_OBZ){
+        else if(autoSelector == AutoSelector.RED_OBZ) {
             initialPose = new Pose2d(12,-65.25,Math.toRadians(90));
         }
         else if(autoSelector == AutoSelector.BLUE_MID) {
@@ -180,15 +180,15 @@ public class Auto extends LinearOpMode {
                 .lineToYSplineHeading(-56,Math.toRadians(225))
                 .build();
 
-
-
         telemetry.addData("Current Auto Selected", autoSelector);
         telemetry.addData("Runtime", runtime.seconds());
         telemetry.update();
+
         while (!isStopRequested() && !opModeIsActive()) {
             int position = visionOutputPosition;
             telemetry.addData("Position during Init", position);
             telemetry.update();
+
         }
 
         int startPosition = visionOutputPosition;
