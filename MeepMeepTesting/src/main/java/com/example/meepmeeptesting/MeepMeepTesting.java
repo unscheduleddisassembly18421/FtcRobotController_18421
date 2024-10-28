@@ -2,7 +2,6 @@ package com.example.meepmeeptesting;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
@@ -16,7 +15,7 @@ public class MeepMeepTesting {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
-                String blahblah = "redauto1";
+                String blahblah = "redauto2";
 
                 if (blahblah.equals("blueauto1")) {
                     myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(36, 65.25, Math.toRadians(270)))
