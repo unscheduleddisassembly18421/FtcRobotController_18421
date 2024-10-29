@@ -45,7 +45,7 @@ public class MeepMeepTesting {
                                     .setTangent(Math.toRadians(245))
                                     .lineToY(38)
                                     .setTangent(Math.toRadians(90))
-                                    .lineToY(56)
+                            .lineToY(56)
                             .build());
                             meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
                                     .setDarkMode(true)

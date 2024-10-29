@@ -14,9 +14,15 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
 
+/***
+ * This is the 2024-2025 Main Autonomous program containing 4 main auto sub codes.
+ *  1. Auto1
+ *      Travels from ___ to ___ in...
+ */
+
 @Config
 
-@Autonomous(name = "Autonomous_2024-2025")
+@Autonomous(name = "Autonomous2024-2025")
 public class Auto extends LinearOpMode {
 
     private static final double SELECTOR_DELAY_TIME = 500;
@@ -31,44 +37,52 @@ public class Auto extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        // List selection
-
         while(opModeInInit()){
             double time = runtime.milliseconds();
             if(((gamepad1.dpad_down) && (autoSelector == AutoSelector.RED_MID) && (time > SELECTOR_DELAY_TIME)) ||
                     ((gamepad1.dpad_up) && (autoSelector == AutoSelector.RED_BASKET) && (time > SELECTOR_DELAY_TIME))) {
                 autoSelector = AutoSelector.BLUE_BASKET;
                 runtime.reset();
+                telemetry.addData("autonomous selected ", autoSelector);
+                telemetry.update();
             }
             else if(((gamepad1.dpad_down) && (autoSelector == AutoSelector.BLUE_BASKET) && (time > SELECTOR_DELAY_TIME)) ||
                 ((gamepad1.dpad_up) && (autoSelector == AutoSelector.BLUE_OBZ) && (time > SELECTOR_DELAY_TIME))) {
                 autoSelector = AutoSelector.RED_BASKET;
                 runtime.reset();
+                telemetry.addData("autonomous selected ", autoSelector);
+                telemetry.update();
             }
             else if(((gamepad1.dpad_down) && (autoSelector == AutoSelector.RED_BASKET) && (time > SELECTOR_DELAY_TIME)) ||
                     ((gamepad1.dpad_up) && (autoSelector == AutoSelector.RED_OBZ) && (time > SELECTOR_DELAY_TIME))) {
                 autoSelector = AutoSelector.BLUE_OBZ;
                 runtime.reset();
+                telemetry.addData("autonomous selected ", autoSelector);
+                telemetry.update();
             }
             else if(((gamepad1.dpad_down) && (autoSelector == AutoSelector.BLUE_OBZ) && (time > SELECTOR_DELAY_TIME)) ||
                     ((gamepad1.dpad_up) && (autoSelector == AutoSelector.BLUE_MID) && (time > SELECTOR_DELAY_TIME))) {
                 autoSelector = AutoSelector.RED_OBZ;
                 runtime.reset();
+                telemetry.addData("autonomous selected ", autoSelector);
+                telemetry.update();
             }
             else if(((gamepad1.dpad_down) && (autoSelector == AutoSelector.RED_OBZ) && (time > SELECTOR_DELAY_TIME)) ||
                     ((gamepad1.dpad_up) && (autoSelector == AutoSelector.RED_MID) && (time > SELECTOR_DELAY_TIME))) {
                 autoSelector = AutoSelector.BLUE_MID;
                 runtime.reset();
+                telemetry.addData("autonomous selected ", autoSelector);
+                telemetry.update();
             }
             else if(((gamepad1.dpad_down) && (autoSelector == AutoSelector.BLUE_MID) && (time > SELECTOR_DELAY_TIME)) ||
                 ((gamepad1.dpad_up) && (autoSelector == AutoSelector.BLUE_BASKET) && (time > SELECTOR_DELAY_TIME))) {
                 autoSelector = AutoSelector.RED_MID;
                 runtime.reset();
+                telemetry.addData("autonomous selected ", autoSelector);
+                telemetry.update();
             }
+
         }
-
-        // Initial pose
-
         Pose2d initialPose;
         if(autoSelector == AutoSelector.BLUE_BASKET) {
             initialPose = new Pose2d(36, 65.25, Math.toRadians(270));
@@ -85,14 +99,13 @@ public class Auto extends LinearOpMode {
         else if(autoSelector == AutoSelector.BLUE_MID) {
             initialPose = new Pose2d(0, 65.25, Math.toRadians(270));
         }
+        // red mid just so you know ;)
         else {
             initialPose = new Pose2d(0,-65.5,Math.toRadians(90));
         }
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
         int visionOutputPosition = 1;
-
-        // Trajectories
 
         TrajectoryActionBuilder action0_0 = drive.actionBuilder(initialPose)
                 .splineTo(new Vector2d(-6,-38),Math.toRadians(90));
@@ -204,48 +217,30 @@ public class Auto extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        // Actions
-
-        // BLUE_BASKET
-
         Action submersible_0;
         Action spikeOne_0;
         Action basketOne_0;
         Action spikeTwo_0;
-
-        // BLUE_OBZ
 
         Action submersible_1;
         Action spikeOne_1;
         Action Obz1_0;
         Action spikeTwo_1;
 
-        // RED_BASKET
-
         Action submersible_2;
         Action spikeOne_2;
         Action basketOne_1;
         Action spikeTwo_2;
-
-        // RED_OBZ
 
         Action submersible_3;
         Action spikeOne_3;
         Action Obz1_1;
         Action spikeTwo_3;
 
-        // BLUE_MID
-
         Action submersible_4;
         Action spikeOne_4;
         Action basketOne_2;
         Action spikeTwo_4;
-
-        // RED_MID
-
-        /* Same order down here |
-                                V
-        */
 
         Action submersible_5;
         Action spikeOne_5;
@@ -282,7 +277,7 @@ public class Auto extends LinearOpMode {
         basketOne_3 = action5_2.build();
         spikeTwo_5 = action5_3.build();
 
-        // Run code
+        //run code
         if(autoSelector == AutoSelector.BLUE_BASKET) {
             Actions.runBlocking(
                     new SequentialAction(
@@ -351,4 +346,3 @@ public class Auto extends LinearOpMode {
         }
     }
 }
-//ra
