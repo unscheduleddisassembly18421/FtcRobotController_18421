@@ -57,7 +57,9 @@ public class LiftRunToPosition extends OpMode {
   }
 
   /**
-   * This method will be called once, when the play button is pressed.
+   * This method will be called once, wpublic void close_claw(){
+        claw.setPosition(CLAW_CLOSED_POSITION);
+    }hen the play button is pressed.
    */
   @Override
   public void start() {
