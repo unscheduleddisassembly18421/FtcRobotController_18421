@@ -12,6 +12,10 @@ import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_SPEED;
 import static org.firstinspires.ftc.teamcode.DriveConstants.TRANSFER_POSITION;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -104,64 +108,48 @@ public class HardwareRobotAuto {
         // If there are encoders connected, switch to RUN_USING_ENCODER mode for greater accuracy
 
     }
+    public class ClawClose implements Action {
 
-    //extension
-    public void retract(){
-        leftExtension.setTargetPosition(BASE_POSITION);
-        rightExtension.setTargetPosition(BASE_POSITION);
-    }
-
-    public void extension(){
-        leftExtension.setTargetPosition(FULL_POSITION);
-        rightExtension.setTargetPosition(FULL_POSITION);
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            claw.setPosition(CLAW_CLOSED_POSITION);
+            return false;
+        }
     }
 
-    //claw
-    public void close_claw(){
-        claw.setPosition(CLAW_CLOSED_POSITION);
+    public Action clawClose(){return new ClawClose();}
+
+    public class ClawOpen implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            claw.setPosition(CLAW_OPEN_POSITION);
+            return false;
+        }
     }
 
-    public void open_claw(){
-        claw.setPosition(CLAW_OPEN_POSITION);
+    public Action clawOpen(){return new ClawOpen();}
+
+    public class ArmExtended implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            arm.setTargetPosition(FULL_POSITION);
+
+            //return Math.abs(arm.getCurrentPosition()-FULL_POSITION)>10;
+            //return arm.isBusy();
+
+            return false;
+        }
     }
 
-    //arm
-    public void dock(){
-        arm.setTargetPosition(DOCK_POSITION);
-    }
+    public Action armExtended(){return new ArmExtended();}
 
-    public void align(){
-        arm.setTargetPosition(ALIGN_POSITION);
-    }
 
-    public void dunk(){
-        arm.setTargetPosition(DUNK_POSITION);
-    }
 
-    //intake flip
-    public void transfer(){
-        intakeFlip.setPosition(TRANSFER_POSITION);
-    }
 
-    public void intake(){
-        intakeFlip.setPosition(INTAKE_POSITION);
-    }
 
-    public void reverseIntake(){
-        intake.setDirection(DcMotor.Direction.REVERSE);
-    }
-    public void forwardIntake(){
-        intake.setDirection(DcMotor.Direction.FORWARD);
-    }
 
-    //intake
-    public void nomnom(){
-        intake.setPower(INTAKE_SPEED);
-    }
-
-    public void nomnomStop(){
-        intake.setPower(0);
-    }
 
 
 }

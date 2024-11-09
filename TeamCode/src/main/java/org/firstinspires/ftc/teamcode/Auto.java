@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -27,7 +28,7 @@ public class Auto extends LinearOpMode {
 
     private static final double SELECTOR_DELAY_TIME = 500;
     private final ElapsedTime runtime = new ElapsedTime();
-    public enum AutoSelector {BLUE_BASKET,RED_BASKET,BLUE_OBZ,RED_OBZ,BLUE_MID,RED_MID}
+    public enum AutoSelector {BLUE_BASKET,RED_BASKET,BLUE_OBZ,RED_OBZ,BLUE_MID,RED_MID,TEST}
     public AutoSelector autoSelector = AutoSelector.BLUE_BASKET;
 
     @Override
@@ -103,34 +104,46 @@ public class Auto extends LinearOpMode {
         else {
             initialPose = new Pose2d(0,-65.5,Math.toRadians(90));
         }
+        // TODO CHANGE LATER
+        autoSelector = AutoSelector.TEST;
+        initialPose = new Pose2d(0,0,0);
 
-        MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
+        if(autoSelector == AutoSelector.TEST) {
+            telemetry.addData("thing selected", autoSelector);
+            telemetry.update();
+        }
+
+
+        //MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
+        HardwareRobotAuto r = new HardwareRobotAuto(telemetry,hardwareMap);
+        r.drive.pose = initialPose;
+
         int visionOutputPosition = 1;
 
-        TrajectoryActionBuilder action0_0 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action0_0 = r.drive.actionBuilder(initialPose)
                 .splineTo(new Vector2d(-6,-38),Math.toRadians(90));
-        TrajectoryActionBuilder action0_1 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action0_1 = r.drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(Math.toRadians(0)))
                 .lineToXSplineHeading(-48,Math.toRadians(270));
-        TrajectoryActionBuilder action0_2 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action0_2 = r.drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(-90))
                 .splineTo(new Vector2d(-56,-56),Math.toRadians(225));
-        TrajectoryActionBuilder action0_3 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action0_3 = r.drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(90))
                 .lineToYSplineHeading(-38,Math.toRadians(-90));
         Action basketTwo_0 = action0_0.fresh()
                 .lineToYSplineHeading(-56,Math.toRadians(225))
                 .build();
 
-        TrajectoryActionBuilder action1_0 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action1_0 = r.drive.actionBuilder(initialPose)
                 .splineTo(new Vector2d(-6,38),Math.toRadians(270));
-        TrajectoryActionBuilder action1_1 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action1_1 = r.drive.actionBuilder(initialPose)
                 .setTangent(0)
                 .lineToXSplineHeading(-48,Math.toRadians(90));
-        TrajectoryActionBuilder action1_2 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action1_2 = r.drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(90))
                 .lineToY(56);
-        TrajectoryActionBuilder action1_3 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action1_3 = r.drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(245))
                 .lineToY(38);
         Action Obz2_0 = action0_1.fresh()
@@ -138,30 +151,30 @@ public class Auto extends LinearOpMode {
                 .lineToY(56)
                 .build();
 
-        TrajectoryActionBuilder action2_0 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action2_0 = r.drive.actionBuilder(initialPose)
                 .splineTo(new Vector2d(-6,-38),Math.toRadians(90));
-        TrajectoryActionBuilder action2_1 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action2_1 = r.drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(Math.toRadians(0)))
                 .lineToXSplineHeading(-48,Math.toRadians(270));
-        TrajectoryActionBuilder action2_2 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action2_2 = r.drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(-90))
                 .splineTo(new Vector2d(-56,-56),Math.toRadians(225));
-        TrajectoryActionBuilder action2_3 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action2_3 = r.drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(90))
                 .lineToYSplineHeading(-38,Math.toRadians(-90));
         Action basketTwo_1 = action2_0.fresh()
                 .lineToYSplineHeading(-56,Math.toRadians(225))
                 .build();
 
-        TrajectoryActionBuilder action3_0 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action3_0 = r.drive.actionBuilder(initialPose)
                 .splineTo(new Vector2d(6,-38),Math.toRadians(90));
-        TrajectoryActionBuilder action3_1 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action3_1 = r.drive.actionBuilder(initialPose)
                 .setTangent(0)
                 .lineToXSplineHeading(48,Math.toRadians(270));
-        TrajectoryActionBuilder action3_2 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action3_2 = r.drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(-90))
                 .lineToY(-56);
-        TrajectoryActionBuilder action3_3 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action3_3 = r.drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(65))
                 .lineToY(-38);
         Action Obz2_1 = action3_0.fresh()
@@ -169,30 +182,30 @@ public class Auto extends LinearOpMode {
                 .lineToY(-56)
                 .build();
 
-        TrajectoryActionBuilder action4_0 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action4_0 = r.drive.actionBuilder(initialPose)
                 .splineTo(new Vector2d(-6,-38),Math.toRadians(90));
-        TrajectoryActionBuilder action4_1 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action4_1 = r.drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(Math.toRadians(0)))
                 .lineToXSplineHeading(-48,Math.toRadians(270));
-        TrajectoryActionBuilder action4_2 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action4_2 = r.drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(-90))
                 .splineTo(new Vector2d(-56,-56),Math.toRadians(225));
-        TrajectoryActionBuilder action4_3 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action4_3 = r.drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(90))
                 .lineToYSplineHeading(-38,Math.toRadians(-90));
         Action basketTwo_2 = action4_0.fresh()
                 .lineToYSplineHeading(-56,Math.toRadians(225))
                 .build();
 
-        TrajectoryActionBuilder action5_0 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action5_0 = r.drive.actionBuilder(initialPose)
                 .splineTo(new Vector2d(-6,-38),Math.toRadians(90));
-        TrajectoryActionBuilder action5_1 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action5_1 = r.drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(Math.toRadians(0)))
                 .lineToXSplineHeading(-48,Math.toRadians(270));
-        TrajectoryActionBuilder action5_2 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action5_2 = r.drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(-90))
                 .splineTo(new Vector2d(-56,-56),Math.toRadians(225));
-        TrajectoryActionBuilder action5_3 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action5_3 = r.drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(90))
                 .lineToYSplineHeading(-38,Math.toRadians(-90));
         Action basketTwo_3 = action2_0.fresh()
@@ -341,6 +354,15 @@ public class Auto extends LinearOpMode {
                             basketOne_3,
                             spikeTwo_5,
                             basketTwo_3
+                    )
+            );
+        }
+        if(autoSelector == AutoSelector.TEST) {
+            Actions.runBlocking(
+                    new SequentialAction(
+                        r.clawOpen(),
+                        new SleepAction(5),
+                        r.clawClose()
                     )
             );
         }
