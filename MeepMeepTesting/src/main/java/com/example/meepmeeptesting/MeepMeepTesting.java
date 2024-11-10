@@ -15,7 +15,7 @@ public class MeepMeepTesting {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
-                String blahblah = "redauto2";
+                String blahblah = "redauto3";
 
                 if (blahblah.equals("blueauto1")) {
                     myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(36, 65.25, Math.toRadians(270)))
