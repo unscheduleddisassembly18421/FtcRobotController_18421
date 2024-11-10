@@ -29,7 +29,7 @@ public class Auto extends LinearOpMode {
     private static final double SELECTOR_DELAY_TIME = 500;
     private final ElapsedTime runtime = new ElapsedTime();
     public enum AutoSelector {BLUE_BASKET,RED_BASKET,BLUE_OBZ,RED_OBZ,BLUE_MID,RED_MID,TEST}
-    public AutoSelector autoSelector = AutoSelector.BLUE_BASKET;
+    public AutoSelector autoSelector = AutoSelector.TEST;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -37,7 +37,7 @@ public class Auto extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-
+        HardwareRobotAuto r = new HardwareRobotAuto(telemetry,hardwareMap);
         while(opModeInInit()){
             double time = runtime.milliseconds();
             if(((gamepad1.dpad_down) && (autoSelector == AutoSelector.RED_MID) && (time > SELECTOR_DELAY_TIME)) ||
@@ -115,7 +115,7 @@ public class Auto extends LinearOpMode {
 
 
         //MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
-        HardwareRobotAuto r = new HardwareRobotAuto(telemetry,hardwareMap);
+
         r.drive.pose = initialPose;
 
         int visionOutputPosition = 1;
@@ -132,6 +132,7 @@ public class Auto extends LinearOpMode {
                 .setTangent(Math.toRadians(90))
                 .lineToYSplineHeading(-38,Math.toRadians(-90));
         Action basketTwo_0 = action0_0.fresh()
+                .setTangent(Math.toRadians(90))
                 .lineToYSplineHeading(-56,Math.toRadians(225))
                 .build();
 
@@ -163,6 +164,7 @@ public class Auto extends LinearOpMode {
                 .setTangent(Math.toRadians(90))
                 .lineToYSplineHeading(-38,Math.toRadians(-90));
         Action basketTwo_1 = action2_0.fresh()
+                .setTangent(Math.toRadians(90))
                 .lineToYSplineHeading(-56,Math.toRadians(225))
                 .build();
 
@@ -194,6 +196,7 @@ public class Auto extends LinearOpMode {
                 .setTangent(Math.toRadians(90))
                 .lineToYSplineHeading(-38,Math.toRadians(-90));
         Action basketTwo_2 = action4_0.fresh()
+                .setTangent(Math.toRadians(90))
                 .lineToYSplineHeading(-56,Math.toRadians(225))
                 .build();
 
@@ -209,6 +212,7 @@ public class Auto extends LinearOpMode {
                 .setTangent(Math.toRadians(90))
                 .lineToYSplineHeading(-38,Math.toRadians(-90));
         Action basketTwo_3 = action2_0.fresh()
+                .setTangent(Math.toRadians(90))
                 .lineToYSplineHeading(-56,Math.toRadians(225))
                 .build();
 
@@ -361,7 +365,7 @@ public class Auto extends LinearOpMode {
             Actions.runBlocking(
                     new SequentialAction(
                         r.clawOpen(),
-                        new SleepAction(5),
+                        new SleepAction(2),
                         r.clawClose()
                     )
             );
