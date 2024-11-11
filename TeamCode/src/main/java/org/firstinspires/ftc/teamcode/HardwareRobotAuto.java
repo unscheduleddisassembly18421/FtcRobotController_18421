@@ -16,7 +16,9 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -37,15 +39,15 @@ public class HardwareRobotAuto {
     final HardwareMap hardwareMap;
     MecanumDrive drive = null;
 
-    private DcMotor leftExtension = null;
-    private DcMotor rightExtension = null;
-    private DcMotor intake = null;
-    private Servo intakeFlip = null;
-    private DcMotor arm = null;
+    public DcMotor leftExtension = null;
+    public DcMotor rightExtension = null;
+    public DcMotor intake = null;
+    public Servo intakeFlip = null;
+    public Servo arm = null;
     public Servo claw = null;
 
     // Define Motor and Servo objects  (Make them private so they can't be accessed externally)
-    Pose2d startPose = new Pose2d(0,0,Math.toRadians(0));
+    Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
 
 
     List<LynxModule> allHubs;
@@ -56,13 +58,13 @@ public class HardwareRobotAuto {
     public HardwareRobotAuto(Telemetry telemetry, HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
-        drive = new MecanumDrive(hardwareMap,startPose);
+        drive = new MecanumDrive(hardwareMap, startPose);
         allHubs = hardwareMap.getAll(LynxModule.class);
-        leftExtension = hardwareMap.get(DcMotor.class,"leftExtension");    //CH Port _
-        rightExtension = hardwareMap.get(DcMotor.class,"rightExtension");
-        intake = hardwareMap.get(DcMotor.class,"intake");
+        leftExtension = hardwareMap.get(DcMotor.class, "leftExtension");    //CH Port _
+        rightExtension = hardwareMap.get(DcMotor.class, "rightExtension");
+        intake = hardwareMap.get(DcMotor.class, "intake");
         intakeFlip = hardwareMap.get(Servo.class, "intakeFlip");
-        arm = hardwareMap.get(DcMotor.class,"arm");
+        arm = hardwareMap.get(Servo.class, "arm");
         claw = hardwareMap.get(Servo.class, "claw");
 
         //set directions of all motors and servos
@@ -70,17 +72,17 @@ public class HardwareRobotAuto {
         rightExtension.setDirection(DcMotor.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.FORWARD);
         intakeFlip.setDirection(Servo.Direction.REVERSE);
-        arm.setDirection(DcMotor.Direction.REVERSE);
-        claw.setDirection(Servo.Direction.FORWARD);
+        arm.setDirection(Servo.Direction.REVERSE);
+        claw.setDirection(Servo.Direction.REVERSE);
 
         //set the initial position for all servos
         claw.setPosition(CLAW_CLOSED_POSITION);
         intakeFlip.setPosition(TRANSFER_POSITION);
+        arm.setPosition(DOCK_POSITION);
 
         //Set motor behavior
         leftExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         leftExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftExtension.setTargetPosition(BASE_POSITION);
@@ -92,10 +94,6 @@ public class HardwareRobotAuto {
         rightExtension.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightExtension.setPower(EXTENSION_SPEED);
 
-        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        arm.setTargetPosition(BASE_POSITION);
-        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        arm.setPower(EXTENSION_SPEED);
 
         //a specific piece of code used for "bulk reads".  Read gm0 for more info on Bulk Reads.
         for (LynxModule hub : allHubs) {
@@ -108,6 +106,7 @@ public class HardwareRobotAuto {
         // If there are encoders connected, switch to RUN_USING_ENCODER mode for greater accuracy
 
     }
+
     public class ClawClose implements Action {
 
         @Override
@@ -117,7 +116,9 @@ public class HardwareRobotAuto {
         }
     }
 
-    public Action clawClose(){return new ClawClose();}
+    public Action clawClose() {
+        return new ClawClose();
+    }
 
     public class ClawOpen implements Action {
 
@@ -128,28 +129,67 @@ public class HardwareRobotAuto {
         }
     }
 
-    public Action clawOpen(){return new ClawOpen();}
+    public Action clawOpen() {
+        return new ClawOpen();
+    }
 
     public class ArmExtended implements Action {
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            arm.setTargetPosition(FULL_POSITION);
-
-            //return Math.abs(arm.getCurrentPosition()-FULL_POSITION)>10;
-            //return arm.isBusy();
+            arm.setPosition(ALIGN_POSITION);
 
             return false;
         }
     }
 
-    public Action armExtended(){return new ArmExtended();}
+    public Action armExtended() {
+        return new ArmExtended();
+    }
 
+    public class ArmDocked implements Action{
 
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            arm.setPosition(DOCK_POSITION);
+            return false;
+        }
+    }
 
+    public Action armDocked(){
+        return new ArmDocked();
+    }
 
+    public class ArmDunked implements Action{
 
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            arm.setPosition(DUNK_POSITION);
+            return false;
+        }
+    }
 
+    public Action armDunked(){
+        return new ArmDunked();
+    }
 
+    public class RotateArm implements Action {
 
+        double pos;
+
+        public RotateArm(double pos) {
+            this.pos = pos;
+
+        }
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            arm.setPosition(pos);
+            return false;
+        }
+    }
+
+    public Action rotateArm(double pos) {
+        return new InstantAction(() -> arm.setPosition(pos));
+    }
 }

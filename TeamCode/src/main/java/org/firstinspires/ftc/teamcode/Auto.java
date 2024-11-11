@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.DriveConstants.ALIGN_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.DOCK_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.DUNK_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.VERTICAL_POSITION;
+
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -7,6 +12,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
@@ -33,9 +39,9 @@ public class Auto extends LinearOpMode {
     private static final double SELECTOR_DELAY_TIME = 500;
     private final ElapsedTime runtime = new ElapsedTime();
 
-    public enum AutoSelector {BLUE_BASKET, RED_BASKET, BLUE_OBZ, RED_OBZ, BLUE_MID, RED_MID, TEST}
+    public enum AutoSelector {BLUE_BASKET, RED_BASKET, BLUE_OBZ, RED_OBZ, BLUE_MID, RED_MID, TEST, TEST2}
 
-    public AutoSelector autoSelector = AutoSelector.TEST;
+    public AutoSelector autoSelector = AutoSelector.TEST2;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -102,7 +108,7 @@ public class Auto extends LinearOpMode {
             initialPose = new Pose2d(0, -65.5, Math.toRadians(90));
         }
         // TODO CHANGE LATER
-        autoSelector = AutoSelector.TEST;
+        autoSelector = AutoSelector.TEST2;
         initialPose = new Pose2d(0, 0, 0);
 
         if (autoSelector == AutoSelector.TEST) {
@@ -376,6 +382,42 @@ public class Auto extends LinearOpMode {
                                 return false;
                             },
                             new SleepAction(2)
+                    )
+            );
+        }
+        if (autoSelector == AutoSelector.TEST2) {
+            //telemetry.setAutoClear(false);
+            Actions.runBlocking(
+//                    new SequentialAction(
+//                            telemetryPacket -> {
+//                                telemetry.addData("servo position", r.arm.getPosition()).setRetained(true);
+//                                telemetry.update();
+//                                return false;
+//                            },
+//                            r.clawOpen(),
+//                            telemetryPacket -> {
+//                                telemetry.addData("servo position", r.claw.getPosition()).setRetained(true);
+//                                telemetry.update();
+//                                return false;
+//                            },
+//                            new SleepAction(2),
+//                            r.clawClose(),
+//                            telemetryPacket -> {
+//                                telemetry.addData("servo position", r.claw.getPosition()).setRetained(true);
+//                                telemetry.update();
+//                                return false;
+//                            },
+//                            new SleepAction(2)
+//                    )
+                    new SequentialAction(
+                            r.rotateArm(ALIGN_POSITION),
+                            new SleepAction(3),
+                            r.rotateArm(DUNK_POSITION),
+                            new SleepAction(3),
+                            r.clawOpen(),
+                            new SleepAction(3),
+                            r.rotateArm(DOCK_POSITION),
+                            new SleepAction(3)
                     )
             );
         }
