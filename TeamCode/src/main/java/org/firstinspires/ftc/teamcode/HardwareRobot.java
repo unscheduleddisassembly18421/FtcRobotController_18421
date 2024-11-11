@@ -12,6 +12,7 @@ import static org.firstinspires.ftc.teamcode.DriveConstants.FULL_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_SPEED;
 import static org.firstinspires.ftc.teamcode.DriveConstants.TRANSFER_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.VERTICAL_POSITION;
 import static org.firstinspires.ftc.teamcode.SimpleExamples.TwoWheelDriveConstants.MAX_SPEED;
 import static org.firstinspires.ftc.teamcode.SimpleExamples.TwoWheelDriveConstants.SLOW_MODE_SPEED;
 
@@ -43,7 +44,7 @@ public class HardwareRobot {
     private DcMotor rightExtension = null;
     private DcMotor intake = null;
     public Servo intakeFlip = null;
-    private DcMotor arm = null;
+    public Servo arm = null;
     public Servo claw = null;
 
     // Define Motor and Servo objects  (Make them private so they can't be accessed externally)
@@ -64,7 +65,7 @@ public class HardwareRobot {
         rightExtension = hardwareMap.get(DcMotor.class,"rightExtension");
         intake = hardwareMap.get(DcMotor.class,"intake");
         intakeFlip = hardwareMap.get(Servo.class, "intakeFlip");
-        arm = hardwareMap.get(DcMotor.class,"arm");
+        arm = hardwareMap.get(Servo.class,"arm");
         claw = hardwareMap.get(Servo.class, "claw");
 
         //set directions of all motors and servos
@@ -72,17 +73,18 @@ public class HardwareRobot {
         rightExtension.setDirection(DcMotor.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.REVERSE);
         intakeFlip.setDirection(Servo.Direction.FORWARD);
-        arm.setDirection(DcMotor.Direction.REVERSE);
-        claw.setDirection(Servo.Direction.FORWARD);
+        arm.setDirection(Servo.Direction.REVERSE);
+        claw.setDirection(Servo.Direction.REVERSE);
 
         //set the initial position for all servos
         claw.setPosition(CLAW_CLOSED_POSITION);
         intakeFlip.setPosition(TRANSFER_POSITION);
+        arm.setPosition(DOCK_POSITION);
 
         //Set motor behavior
         leftExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         leftExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftExtension.setTargetPosition(BASE_POSITION);
@@ -94,10 +96,7 @@ public class HardwareRobot {
         rightExtension.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightExtension.setPower(EXTENSION_SPEED);
 
-        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        arm.setTargetPosition(BASE_POSITION);
-        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        arm.setPower(ARM_SPEED);
+
 
         //a specific piece of code used for "bulk reads".  Read gm0 for more info on Bulk Reads.
         for (LynxModule hub : allHubs) {
@@ -132,17 +131,25 @@ public class HardwareRobot {
     }
 
     //arm
+
+
     public void dock(){
-        arm.setTargetPosition(DOCK_POSITION);
+        arm.setPosition(DOCK_POSITION);
+    }
+
+    public void vertical(){
+        arm.setPosition(VERTICAL_POSITION);
     }
 
     public void align(){
-        arm.setTargetPosition(ALIGN_POSITION);
+        arm.setPosition(ALIGN_POSITION);
     }
 
-    public void dunk(){
-        arm.setTargetPosition(DUNK_POSITION);
+    public void dunk() {
+        arm.setPosition(DUNK_POSITION);
     }
+
+
 
     //intake flip
     public void transfer(){

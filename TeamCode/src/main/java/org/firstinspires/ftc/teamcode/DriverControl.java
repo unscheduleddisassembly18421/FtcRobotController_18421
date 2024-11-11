@@ -34,7 +34,7 @@ public class DriverControl extends OpMode
     ElapsedTime clock = new ElapsedTime();
     HardwareRobot robot;//new TwoWheelDriveHardware(telemetry, hardwareMap);
     boolean aCurrent = false;
-    boolean aToggle = false;
+    boolean aToggle = true;
     boolean aLast = false;
 
     boolean bCurrent = false;
@@ -60,6 +60,7 @@ public class DriverControl extends OpMode
     public void init() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         robot = new HardwareRobot(telemetry,hardwareMap);
+        robot.close_claw();
         telemetry.addData("Status", "Initialized");
     }
 
@@ -77,7 +78,7 @@ public class DriverControl extends OpMode
         TelemetryPacket packet = new TelemetryPacket();
 
         double drive = -gamepad1.left_stick_y;
-        double turn  =  -gamepad1.right_stick_x;
+        double turn  =  gamepad1.right_stick_x;
         double strafe = gamepad1.left_stick_x;
         boolean inSlowMode = gamepad1.right_bumper;
 
@@ -97,6 +98,7 @@ public class DriverControl extends OpMode
 
         if(flipCurrent && !flipLast && clock.milliseconds() > TOGGLE_DELAY){
             flipToggle = !flipToggle;
+            clock.reset();
         }
         if(flipToggle){
             robot.intake();
@@ -110,6 +112,7 @@ public class DriverControl extends OpMode
         intakeCurrent = gamepad1.left_bumper;
         if(intakeCurrent && !intakeLast && clock.milliseconds() > TOGGLE_DELAY){
             intakeToggle = !intakeToggle;
+            clock.reset();
         }
         if(intakeToggle){
             robot.nomnom();
@@ -131,6 +134,7 @@ public class DriverControl extends OpMode
 
         if(aCurrent && !aLast && clock.milliseconds() > TOGGLE_DELAY){
             aToggle = !aToggle;
+            clock.reset();
         }
         if(aToggle){
             robot.close_claw();
@@ -145,6 +149,7 @@ public class DriverControl extends OpMode
 
         if(bCurrent && !bLast && clock.milliseconds() > TOGGLE_DELAY){
             bToggle = !bToggle;
+            clock.reset();
         }
         if(bToggle){
             robot.extension();
@@ -157,8 +162,10 @@ public class DriverControl extends OpMode
         // cool
 
         //arm has to rotate to (docked, staging position for placement, first rung position,
+        //TODO Should we move to DPAD so we can move these in any order?
         xCurrent = gamepad1.x;
         if(xCurrent && !xLast){
+            clock.reset();
             if (armToggle == 0){
                 armToggle = 1;
             }
@@ -166,13 +173,19 @@ public class DriverControl extends OpMode
                 armToggle = 2;
             }
             else if (armToggle == 2){
+                armToggle = 3;
+            }
+            else if (armToggle == 3){
                 armToggle = 0;
             }
         }
         if (armToggle == 1){
-            robot.align();
+            robot.vertical();
         }
         else if (armToggle == 2){
+            robot.align();
+        }
+        else if (armToggle == 3){
             robot.dunk();
         }
         else {
@@ -188,6 +201,8 @@ public class DriverControl extends OpMode
         FtcDashboard.getInstance().sendTelemetryPacket(packet);
         telemetry.addData("claw position", robot.claw.getPosition());
         telemetry.addData("intake flip position", robot.intakeFlip.getPosition());
+        telemetry.addData("arm position", robot.arm.getPosition());
+        telemetry.addData("armToggle", armToggle);
         telemetry.update();
 
         // Show the elapsed game time and wheel power.

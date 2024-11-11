@@ -23,9 +23,10 @@ public class DriveConstants {
     public static double EXTENSION_SPEED = 1;
 
     //arm
-    public static int DOCK_POSITION = 0;
-    public static int ALIGN_POSITION = 100;
-    public static int DUNK_POSITION = 200;
+    public static double DOCK_POSITION = .532;
+    public static double VERTICAL_POSITION = 0.636;
+    public static double ALIGN_POSITION = .72;
+    public static double DUNK_POSITION = .78;
 
     public static double ARM_SPEED = 0.1;
 
