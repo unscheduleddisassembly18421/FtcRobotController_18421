@@ -154,7 +154,7 @@ public class DriverControl extends OpMode
         }
         bLast = bCurrent;
 
-
+        // cool
 
         //arm has to rotate to (docked, staging position for placement, first rung position,
         xCurrent = gamepad1.x;
