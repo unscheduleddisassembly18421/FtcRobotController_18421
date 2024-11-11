@@ -42,7 +42,7 @@ public class HardwareRobotAuto {
     private DcMotor intake = null;
     private Servo intakeFlip = null;
     private DcMotor arm = null;
-    private Servo claw = null;
+    public Servo claw = null;
 
     // Define Motor and Servo objects  (Make them private so they can't be accessed externally)
     Pose2d startPose = new Pose2d(0,0,Math.toRadians(0));
