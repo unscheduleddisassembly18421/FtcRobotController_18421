@@ -5,29 +5,29 @@ import com.acmerobotics.dashboard.config.Config;
 @Config
 public class DriveConstants {
     //claw
-    public static final double CLAW_CLOSED_POSITION = 0;
-    public static final double CLAW_OPEN_POSITION = 1;
+    public static double CLAW_CLOSED_POSITION = 0.1;
+    public static double CLAW_OPEN_POSITION = 0.2;
 
     //flip intake
-    public static final double TRANSFER_POSITION = 0;
-    public static final double INTAKE_POSITION = 1;
+    public static double TRANSFER_POSITION = 0;
+    public static double INTAKE_POSITION = 0.62;
 
     //intake
-    public static final double INTAKE_SPEED = 1;
+    public static double INTAKE_SPEED = 1;
 
     //extension
-    public static final int BASE_POSITION = 0;
-    public static final int HALF_POSITION = 100;
-    public static final int FULL_POSITION = 200;
+    public static int BASE_POSITION = 0;
+    public static int HALF_POSITION = 100;
+    public static int FULL_POSITION = 200;
 
-    public static final double EXTENSION_SPEED = 1;
+    public static double EXTENSION_SPEED = 1;
 
     //arm
-    public static final int DOCK_POSITION = 0;
-    public static final int ALIGN_POSITION = 100;
-    public static final int DUNK_POSITION = 200;
+    public static int DOCK_POSITION = 0;
+    public static int ALIGN_POSITION = 100;
+    public static int DUNK_POSITION = 200;
 
-    public static final double ARM_SPEED = 1;
+    public static double ARM_SPEED = 0.1;
 
 
 

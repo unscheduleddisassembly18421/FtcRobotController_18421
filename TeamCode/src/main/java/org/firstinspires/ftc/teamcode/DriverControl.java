@@ -30,6 +30,7 @@ import org.firstinspires.ftc.teamcode.SimpleExamples.TwoWheelDriveHardware;
 //@Disabled
 public class DriverControl extends OpMode
 {
+    private static final double TOGGLE_DELAY = 250;
     ElapsedTime clock = new ElapsedTime();
     HardwareRobot robot;//new TwoWheelDriveHardware(telemetry, hardwareMap);
     boolean aCurrent = false;
@@ -76,8 +77,8 @@ public class DriverControl extends OpMode
         TelemetryPacket packet = new TelemetryPacket();
 
         double drive = -gamepad1.left_stick_y;
-        double turn  =  gamepad1.right_stick_x;
-        double strafe = -gamepad1.left_stick_x;
+        double turn  =  -gamepad1.right_stick_x;
+        double strafe = gamepad1.left_stick_x;
         boolean inSlowMode = gamepad1.right_bumper;
 
         if (gamepad1.b){
@@ -91,11 +92,10 @@ public class DriverControl extends OpMode
                 ),
                 strafe
         ));
-// yada
         //intake swivel toggle
         flipCurrent = gamepad1.right_bumper;
 
-        if(flipCurrent && !flipLast){
+        if(flipCurrent && !flipLast && clock.milliseconds() > TOGGLE_DELAY){
             flipToggle = !flipToggle;
         }
         if(flipToggle){
@@ -108,7 +108,7 @@ public class DriverControl extends OpMode
 
         // intake
         intakeCurrent = gamepad1.left_bumper;
-        if(intakeCurrent && !intakeLast){
+        if(intakeCurrent && !intakeLast && clock.milliseconds() > TOGGLE_DELAY){
             intakeToggle = !intakeToggle;
         }
         if(intakeToggle){
@@ -129,7 +129,7 @@ public class DriverControl extends OpMode
         //claw toggle to close and open
         aCurrent = gamepad1.a;
 
-        if(aCurrent && !aLast){
+        if(aCurrent && !aLast && clock.milliseconds() > TOGGLE_DELAY){
             aToggle = !aToggle;
         }
         if(aToggle){
@@ -143,7 +143,7 @@ public class DriverControl extends OpMode
         //extension toggle
         bCurrent = gamepad1.b;
 
-        if(bCurrent && !bLast){
+        if(bCurrent && !bLast && clock.milliseconds() > TOGGLE_DELAY){
             bToggle = !bToggle;
         }
         if(bToggle){
@@ -158,7 +158,6 @@ public class DriverControl extends OpMode
 
         //arm has to rotate to (docked, staging position for placement, first rung position,
         xCurrent = gamepad1.x;
-
         if(xCurrent && !xLast){
             if (armToggle == 0){
                 armToggle = 1;
@@ -187,6 +186,9 @@ public class DriverControl extends OpMode
         packet.fieldOverlay().setStroke("#3F51B5");
         Drawing.drawRobot(packet.fieldOverlay(), robot.drive.pose);
         FtcDashboard.getInstance().sendTelemetryPacket(packet);
+        telemetry.addData("claw position", robot.claw.getPosition());
+        telemetry.addData("intake flip position", robot.intakeFlip.getPosition());
+        telemetry.update();
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + clock.toString());
