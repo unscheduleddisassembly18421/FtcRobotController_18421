@@ -216,7 +216,15 @@ public class DriverControl extends OpMode
         FtcDashboard.getInstance().sendTelemetryPacket(packet);
         telemetry.addData("claw position", robot.claw.getPosition());
         telemetry.addData("intake flip position", robot.intakeFlip.getPosition());
-        telemetry.addData("arm position", robot.arm.getPosition());
+        //telemetry.addData("arm position", robot.arm.getPosition());
+        // something i came up with
+        if(robot.arm.getPosition() == 0.65) {
+            telemetry.addLine("vertical position");
+        } else if(robot.arm.getPosition() == 0) {
+            telemetry.addLine("start position");
+        } else if(robot.arm.getPosition() == 0.31) {
+            telemetry.addLine("grab position");
+        }
         telemetry.addData("armToggle", armToggle);
         telemetry.update();
 
