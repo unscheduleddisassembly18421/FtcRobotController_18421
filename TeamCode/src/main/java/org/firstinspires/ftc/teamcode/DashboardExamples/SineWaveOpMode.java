@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.DashboardExamples;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 /*
@@ -10,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
  * phase, and frequency of the oscillation and watch the changes propagate immediately to the graph.
  */
 @Config
+@Disabled
 @Autonomous
 public class SineWaveOpMode extends LinearOpMode {
     public static double AMPLITUDE = 10;

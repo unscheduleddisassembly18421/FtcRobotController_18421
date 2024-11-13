@@ -4,12 +4,14 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 /*
  * Demonstration of the dashboard's field overlay display capabilities.
  */
 @Config
+@Disabled
 @Autonomous
 public class OrbitOpMode extends LinearOpMode {
     public static double ORBITAL_FREQUENCY = 0.05;

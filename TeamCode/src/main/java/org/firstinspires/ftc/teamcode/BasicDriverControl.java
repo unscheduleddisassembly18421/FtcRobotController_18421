@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.SimpleExamples.LiftStateMachine;
 
+@Disabled
 @TeleOp(name="Four Wheel Drive", group="")
 //@Disabled
 public class BasicDriverControl extends OpMode

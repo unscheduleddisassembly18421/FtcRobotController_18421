@@ -3,10 +3,12 @@ package org.firstinspires.ftc.teamcode.DashboardExamples;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @Config
+@Disabled
 @TeleOp
 public class ImageOpMode extends LinearOpMode {
     @Override
