@@ -73,7 +73,7 @@ public class HardwareRobot {
         rightExtension.setDirection(DcMotor.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.REVERSE);
         intakeFlip.setDirection(Servo.Direction.FORWARD);
-        arm.setDirection(Servo.Direction.REVERSE);
+        arm.setDirection(Servo.Direction.FORWARD);
         claw.setDirection(Servo.Direction.REVERSE);
 
         //set the initial position for all servos

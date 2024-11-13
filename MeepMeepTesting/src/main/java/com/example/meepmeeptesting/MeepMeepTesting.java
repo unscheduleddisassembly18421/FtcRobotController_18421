@@ -15,11 +15,11 @@ public class MeepMeepTesting {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
-                String blahblah = "redauto3";
+                String blahblah = "blueauto1";
 
                 if (blahblah.equals("blueauto1")) {
-                    myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(36, 65.25, Math.toRadians(270)))
-                            .splineTo(new Vector2d(6, 38), Math.toRadians(270))
+                    myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(36, 64, Math.toRadians(270)))
+                            .splineTo(new Vector2d(6, 33), Math.toRadians(270))
                             .setTangent(0)
                             .lineToXSplineHeading(48, Math.toRadians(90))
                             .setTangent(Math.toRadians(90))

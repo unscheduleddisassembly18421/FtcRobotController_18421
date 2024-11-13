@@ -3,6 +3,10 @@ package org.firstinspires.ftc.teamcode;
 
 //import com.acmerobotics.dashboard.FtcDashboard;
 //import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import static org.firstinspires.ftc.teamcode.DriveConstants.DOCK_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.DUNK_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.VERTICAL_POSITION;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -50,6 +54,7 @@ public class DriverControl extends OpMode
     boolean intakeLast = false;
 
 
+
     int armToggle = 0;  // the current "position" of the arm
     boolean xCurrent = false;
     boolean xLast = false;
@@ -79,7 +84,7 @@ public class DriverControl extends OpMode
 
         double drive = -gamepad1.left_stick_y;
         double turn  =  gamepad1.right_stick_x;
-        double strafe = gamepad1.left_stick_x;
+        double strafe = -gamepad1.left_stick_x;
         boolean inSlowMode = gamepad1.right_bumper;
 
         if (gamepad1.b){
@@ -163,35 +168,45 @@ public class DriverControl extends OpMode
 
         //arm has to rotate to (docked, staging position for placement, first rung position,
         //TODO Should we move to DPAD so we can move these in any order?
-        xCurrent = gamepad1.x;
-        if(xCurrent && !xLast){
-            clock.reset();
-            if (armToggle == 0){
-                armToggle = 1;
-            }
-            else if (armToggle == 1){
-                armToggle = 2;
-            }
-            else if (armToggle == 2){
-                armToggle = 3;
-            }
-            else if (armToggle == 3){
-                armToggle = 0;
-            }
+        if(gamepad1.dpad_up){
+            robot.arm.setPosition(VERTICAL_POSITION);
         }
-        if (armToggle == 1){
-            robot.vertical();
+        else if(gamepad1.dpad_down){
+            robot.arm.setPosition(DUNK_POSITION);
         }
-        else if (armToggle == 2){
-            robot.align();
+        else if(gamepad1.dpad_right || gamepad1.dpad_left){
+            robot.arm.setPosition(DOCK_POSITION);
         }
-        else if (armToggle == 3){
-            robot.dunk();
-        }
-        else {
-            robot.dock();
-        }
-        xLast = xCurrent;
+
+//        xCurrent = gamepad1.x;
+//        if(xCurrent && !xLast){
+//            clock.reset();
+//            if (armToggle == 0){
+//                armToggle = 1;
+//            }
+//            else if (armToggle == 1){
+//                armToggle = 2;
+//            }
+//            else if (armToggle == 2){
+//                armToggle = 3;
+//            }
+//            else if (armToggle == 3){
+//                armToggle = 0;
+//            }
+//        }
+//        if (armToggle == 1){
+//            robot.vertical();
+//        }
+//        else if (armToggle == 2){
+//            robot.align();
+//        }
+//        else if (armToggle == 3){
+//            robot.dunk();
+//        }
+//        else {
+//            robot.dock();
+//        }
+//        xLast = xCurrent;
 
 
         robot.drive.updatePoseEstimate();

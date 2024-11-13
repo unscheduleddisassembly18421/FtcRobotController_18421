@@ -72,7 +72,7 @@ public class HardwareRobotAuto {
         rightExtension.setDirection(DcMotor.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.FORWARD);
         intakeFlip.setDirection(Servo.Direction.REVERSE);
-        arm.setDirection(Servo.Direction.REVERSE);
+        arm.setDirection(Servo.Direction.FORWARD);
         claw.setDirection(Servo.Direction.REVERSE);
 
         //set the initial position for all servos
@@ -133,6 +133,7 @@ public class HardwareRobotAuto {
         return new ClawOpen();
     }
 
+
     public class ArmExtended implements Action {
 
         @Override
@@ -190,6 +191,7 @@ public class HardwareRobotAuto {
     }
 
     public Action rotateArm(double pos) {
+
         return new InstantAction(() -> arm.setPosition(pos));
     }
 }

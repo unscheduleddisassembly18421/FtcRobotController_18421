@@ -13,6 +13,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
@@ -24,6 +25,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
+
+import java.util.ArrayList;
 
 /***
  * This is the 2024-2025 Main Autonomous program containing 4 main auto sub codes.
@@ -37,9 +40,10 @@ import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
 public class Auto extends LinearOpMode {
 
     private static final double SELECTOR_DELAY_TIME = 500;
+    private static final double DUNK_DELAY = 1;
     private final ElapsedTime runtime = new ElapsedTime();
 
-    public enum AutoSelector {BLUE_BASKET, RED_BASKET, BLUE_OBZ, RED_OBZ, BLUE_MID, RED_MID, TEST, TEST2}
+    public enum AutoSelector {BLUE_BASKET, RED_BASKET, BLUE_OBZ, RED_OBZ, BLUE_MID, RED_MID, TEST, TEST2,TEST3}
 
     public AutoSelector autoSelector = AutoSelector.TEST2;
 
@@ -223,6 +227,7 @@ public class Auto extends LinearOpMode {
         telemetry.addData("Runtime", runtime.seconds());
         telemetry.update();
 
+
         while (!isStopRequested() && !opModeIsActive()) {
             int position = visionOutputPosition;
             telemetry.addData("Position during Init", position);
@@ -388,27 +393,7 @@ public class Auto extends LinearOpMode {
         if (autoSelector == AutoSelector.TEST2) {
             //telemetry.setAutoClear(false);
             Actions.runBlocking(
-//                    new SequentialAction(
-//                            telemetryPacket -> {
-//                                telemetry.addData("servo position", r.arm.getPosition()).setRetained(true);
-//                                telemetry.update();
-//                                return false;
-//                            },
-//                            r.clawOpen(),
-//                            telemetryPacket -> {
-//                                telemetry.addData("servo position", r.claw.getPosition()).setRetained(true);
-//                                telemetry.update();
-//                                return false;
-//                            },
-//                            new SleepAction(2),
-//                            r.clawClose(),
-//                            telemetryPacket -> {
-//                                telemetry.addData("servo position", r.claw.getPosition()).setRetained(true);
-//                                telemetry.update();
-//                                return false;
-//                            },
-//                            new SleepAction(2)
-//                    )
+//
                     new SequentialAction(
                             r.rotateArm(ALIGN_POSITION),
                             new SleepAction(3),
@@ -418,7 +403,29 @@ public class Auto extends LinearOpMode {
                             new SleepAction(3),
                             r.rotateArm(DOCK_POSITION),
                             new SleepAction(3)
+
                     )
+            );
+
+        }
+        if (autoSelector == AutoSelector.TEST3) {
+            //telemetry.setAutoClear(false);
+            Actions.runBlocking(
+//
+                    new SequentialAction(
+                            r.rotateArm(VERTICAL_POSITION),
+                            spikeOne_0,
+                            r.rotateArm(DUNK_POSITION),
+                            new SleepAction(DUNK_DELAY),
+                            r.clawOpen(),
+                            new SleepAction(3),
+                            r.rotateArm(DOCK_POSITION),
+                            new SleepAction(3)
+                    )
+            );
+            Actions.runBlocking(
+//
+                    new ParallelAction()
             );
         }
     }
