@@ -15,19 +15,16 @@ public class MeepMeepTesting {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
-                String blahblah = "blueauto1";
+                String blahblah = "blueauto3";
 
                 if (blahblah.equals("blueauto1")) {
-                    myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(36, 64, Math.toRadians(270)))
-                            .splineTo(new Vector2d(6, 33), Math.toRadians(270))
-                            .setTangent(0)
-                            .lineToXSplineHeading(48, Math.toRadians(90))
-                            .setTangent(Math.toRadians(90))
-                            .splineTo(new Vector2d(56, 56), Math.toRadians(45))
-                            .setTangent(Math.toRadians(-90))
-                            .lineToYSplineHeading(38, Math.toRadians(90))
-                            .setTangent(Math.toRadians(90))
-                            .lineToYSplineHeading(56, Math.toRadians(45))
+                    myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(36, 64, Math.toRadians(90)))
+                                    .setTangent(Math.toRadians(-90))
+                            .splineTo(new Vector2d(6, 33), Math.toRadians(90))
+                                    .setTangent(Math.toRadians(90))
+                                    .lineToY(38)
+                                    .setTangent(Math.toRadians(180))
+                                    .splineTo(new Vector2d(-60,60), Math.toRadians(90))
                             .build());
 
                     meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
@@ -36,16 +33,13 @@ public class MeepMeepTesting {
                             .addEntity(myBot)
                             .start();
                 } else if (blahblah.equals("blueauto3")) {
-                    myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-12,65.25, Math.toRadians(270)))
-                                    .splineTo(new Vector2d(-6,38),Math.toRadians(270))
-                                    .setTangent(0)
-                                    .lineToXSplineHeading(-48,Math.toRadians(90))
+                    myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-12,64, Math.toRadians(90)))
+                                    .setTangent(Math.toRadians(-90))
+                                    .splineTo(new Vector2d(-6,33),Math.toRadians(-90))
                                     .setTangent(Math.toRadians(90))
-                                    .lineToY(56)
-                                    .setTangent(Math.toRadians(245))
                                     .lineToY(38)
-                                    .setTangent(Math.toRadians(90))
-                            .lineToY(56)
+                                    .setTangent(Math.toRadians(180))
+                                    .splineTo(new Vector2d(-60,60),Math.toRadians(90))
                             .build());
                             meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
                                     .setDarkMode(true)

@@ -5,8 +5,8 @@ import com.acmerobotics.dashboard.config.Config;
 @Config
 public class DriveConstants {
     //claw
-    public static double CLAW_CLOSED_POSITION = 0.1;
-    public static double CLAW_OPEN_POSITION = 0.2;
+    public static double CLAW_CLOSED_POSITION = 0;
+    public static double CLAW_OPEN_POSITION = 0.3;
 
     //flip intake
     public static double TRANSFER_POSITION = 0;
@@ -28,7 +28,7 @@ public class DriveConstants {
     public static double ALIGN_POSITION = .72; // delete
     public static double DUNK_POSITION = 0; // start position
 
-    public static double ARM_SPEED = 0.1;
+    public static double ARM_SPEED = 0.1; // delete
 
 
 

@@ -5,14 +5,8 @@ import static org.firstinspires.ftc.teamcode.DriveConstants.DOCK_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.DUNK_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.VERTICAL_POSITION;
 
-import androidx.annotation.NonNull;
-
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
@@ -23,10 +17,6 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
-
-import java.util.ArrayList;
 
 /***
  * This is the 2024-2025 Main Autonomous program containing 4 main auto sub codes.
@@ -40,12 +30,11 @@ import java.util.ArrayList;
 public class Auto extends LinearOpMode {
 
     private static final double SELECTOR_DELAY_TIME = 500;
-    private static final double DUNK_DELAY = 1;
     private final ElapsedTime runtime = new ElapsedTime();
 
     public enum AutoSelector {BLUE_BASKET, RED_BASKET, BLUE_OBZ, RED_OBZ, BLUE_MID, RED_MID, TEST, TEST2,TEST3}
 
-    public AutoSelector autoSelector = AutoSelector.TEST2;
+    public AutoSelector autoSelector = AutoSelector.BLUE_BASKET;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -97,27 +86,18 @@ public class Auto extends LinearOpMode {
         }
         Pose2d initialPose;
         if (autoSelector == AutoSelector.BLUE_BASKET) {
-            initialPose = new Pose2d(36, 65.25, Math.toRadians(270));
+            initialPose = new Pose2d(36, 64, Math.toRadians(90));
         } else if (autoSelector == AutoSelector.BLUE_OBZ) {
-            initialPose = new Pose2d(-12, 65.25, Math.toRadians(270));
+            initialPose = new Pose2d(-12, 64, Math.toRadians(90));
+            // TODO fix rest of paths
         } else if (autoSelector == AutoSelector.RED_BASKET) {
             initialPose = new Pose2d(-36, -65.25, Math.toRadians(90));
         } else if (autoSelector == AutoSelector.RED_OBZ) {
             initialPose = new Pose2d(12, -65.25, Math.toRadians(90));
         } else if (autoSelector == AutoSelector.BLUE_MID) {
             initialPose = new Pose2d(0, 65.25, Math.toRadians(270));
-        }
-        // red mid just so you know ;)
-        else {
+        } else {
             initialPose = new Pose2d(0, -65.5, Math.toRadians(90));
-        }
-        // TODO CHANGE LATER
-        autoSelector = AutoSelector.TEST2;
-        initialPose = new Pose2d(0, 0, 0);
-
-        if (autoSelector == AutoSelector.TEST) {
-            telemetry.addData("thing selected", autoSelector);
-            telemetry.update();
         }
 
 
@@ -127,36 +107,25 @@ public class Auto extends LinearOpMode {
 
         int visionOutputPosition = 1;
 
+        // blue basket unique movements
+
         TrajectoryActionBuilder action0_0 = r.drive.actionBuilder(initialPose)
-                .splineTo(new Vector2d(-6, -38), Math.toRadians(90));
+                .splineTo(new Vector2d(6,33),Math.toRadians(90));
         TrajectoryActionBuilder action0_1 = r.drive.actionBuilder(initialPose)
-                .setTangent(Math.toRadians(Math.toRadians(0)))
-                .lineToXSplineHeading(-48, Math.toRadians(270));
-        TrajectoryActionBuilder action0_2 = r.drive.actionBuilder(initialPose)
-                .setTangent(Math.toRadians(-90))
-                .splineTo(new Vector2d(-56, -56), Math.toRadians(225));
-        TrajectoryActionBuilder action0_3 = r.drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(90))
-                .lineToYSplineHeading(-38, Math.toRadians(-90));
-        Action basketTwo_0 = action0_0.fresh()
-                .setTangent(Math.toRadians(90))
-                .lineToYSplineHeading(-56, Math.toRadians(225))
+                .lineToY(38);
+        Action Obz_0 = action0_0.fresh()
+                .setTangent(Math.toRadians(180))
+                .splineTo(new Vector2d(-60,60), Math.toRadians(90))
                 .build();
 
+        // blue obz unique movements
+
         TrajectoryActionBuilder action1_0 = r.drive.actionBuilder(initialPose)
-                .splineTo(new Vector2d(-6, 38), Math.toRadians(270));
-        TrajectoryActionBuilder action1_1 = r.drive.actionBuilder(initialPose)
-                .setTangent(0)
-                .lineToXSplineHeading(-48, Math.toRadians(90));
-        TrajectoryActionBuilder action1_2 = r.drive.actionBuilder(initialPose)
-                .setTangent(Math.toRadians(90))
-                .lineToY(56);
-        TrajectoryActionBuilder action1_3 = r.drive.actionBuilder(initialPose)
-                .setTangent(Math.toRadians(245))
-                .lineToY(38);
-        Action Obz2_0 = action0_1.fresh()
-                .setTangent(Math.toRadians(90))
-                .lineToY(56)
+                .splineTo(new Vector2d(-6, 33), Math.toRadians(90));
+        Action Obz_1 = action1_0.fresh()
+                .setTangent(Math.toRadians(180))
+                .splineTo(new Vector2d(-60,60),Math.toRadians(90))
                 .build();
 
         TrajectoryActionBuilder action2_0 = r.drive.actionBuilder(initialPose)
@@ -241,16 +210,11 @@ public class Auto extends LinearOpMode {
         waitForStart();
 
         if (isStopRequested()) return;
-
+        // blue basket
         Action submersible_0;
-        Action spikeOne_0;
-        Action basketOne_0;
-        Action spikeTwo_0;
-
+        Action moveBack_0;
+        // blue obz
         Action submersible_1;
-        Action spikeOne_1;
-        Action Obz1_0;
-        Action spikeTwo_1;
 
         Action submersible_2;
         Action spikeOne_2;
@@ -273,14 +237,10 @@ public class Auto extends LinearOpMode {
         Action spikeTwo_5;
 
         submersible_0 = action0_0.build();
-        spikeOne_0 = action0_1.build();
-        basketOne_0 = action0_2.build();
-        spikeTwo_0 = action0_3.build();
+        moveBack_0 = action0_1.build();
 
         submersible_1 = action1_0.build();
-        spikeOne_1 = action1_1.build();
-        Obz1_0 = action1_2.build();
-        spikeTwo_1 = action1_3.build();
+
 
         submersible_2 = action2_0.build();
         spikeOne_2 = action2_1.build();
@@ -306,21 +266,33 @@ public class Auto extends LinearOpMode {
         if (autoSelector == AutoSelector.BLUE_BASKET) {
             Actions.runBlocking(
                     new SequentialAction(
+                            r.rotateArm(VERTICAL_POSITION),
+                            new SleepAction(2),
                             submersible_0,
-                            spikeOne_0,
-                            basketOne_0,
-                            spikeTwo_0,
-                            basketTwo_0
+                            r.rotateArm(DUNK_POSITION),
+                            new SleepAction(2),
+                            r.clawOpen(),
+                            new SleepAction(1),
+                            moveBack_0,
+                            Obz_0
+
+
                     )
             );
         } else if (autoSelector == AutoSelector.BLUE_OBZ) {
             Actions.runBlocking(
                     new SequentialAction(
+                            r.rotateArm(VERTICAL_POSITION),
+                            new SleepAction(2),
                             submersible_1,
-                            spikeOne_1,
-                            Obz1_0,
-                            spikeTwo_1,
-                            Obz2_0
+                            r.rotateArm(DUNK_POSITION),
+                            new SleepAction(2),
+                            r.clawOpen(),
+                            new SleepAction(1),
+                            moveBack_0,
+                            Obz_1
+
+
                     )
             );
         } else if (autoSelector == AutoSelector.RED_BASKET) {
@@ -414,9 +386,8 @@ public class Auto extends LinearOpMode {
 //
                     new SequentialAction(
                             r.rotateArm(VERTICAL_POSITION),
-                            spikeOne_0,
                             r.rotateArm(DUNK_POSITION),
-                            new SleepAction(DUNK_DELAY),
+                            new SleepAction(2),
                             r.clawOpen(),
                             new SleepAction(3),
                             r.rotateArm(DOCK_POSITION),
