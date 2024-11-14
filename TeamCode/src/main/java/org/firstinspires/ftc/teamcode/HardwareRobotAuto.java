@@ -78,7 +78,7 @@ public class HardwareRobotAuto {
         //set the initial position for all servos
         claw.setPosition(CLAW_CLOSED_POSITION);
         intakeFlip.setPosition(TRANSFER_POSITION);
-        arm.setPosition(DOCK_POSITION);
+        arm.setPosition(DUNK_POSITION);
 
         //Set motor behavior
         leftExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
