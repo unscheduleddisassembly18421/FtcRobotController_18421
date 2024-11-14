@@ -84,6 +84,7 @@ public class HardwareRobotAuto {
         leftExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        /*
         leftExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftExtension.setTargetPosition(BASE_POSITION);
         leftExtension.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -93,7 +94,9 @@ public class HardwareRobotAuto {
         rightExtension.setTargetPosition(BASE_POSITION);
         rightExtension.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightExtension.setPower(EXTENSION_SPEED);
-
+        */
+        leftExtension.setPower(0);
+        rightExtension.setPower(0);
 
         //a specific piece of code used for "bulk reads".  Read gm0 for more info on Bulk Reads.
         for (LynxModule hub : allHubs) {
