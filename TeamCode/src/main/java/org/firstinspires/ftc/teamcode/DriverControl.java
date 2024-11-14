@@ -217,11 +217,11 @@ public class DriverControl extends OpMode
         telemetry.addData("intake flip position", robot.intakeFlip.getPosition());
         //telemetry.addData("arm position", robot.arm.getPosition());
         // something i came up with
-        if(robot.arm.getPosition() == 0.65) {
+        if(robot.arm.getPosition() == VERTICAL_POSITION) {
             telemetry.addLine("vertical position");
-        } else if(robot.arm.getPosition() == 0) {
+        } else if(robot.arm.getPosition() == DUNK_POSITION) {
             telemetry.addLine("start position");
-        } else if(robot.arm.getPosition() == 0.31) {
+        } else if(robot.arm.getPosition() == DOCK_POSITION) {
             telemetry.addLine("grab position");
         }
         telemetry.addData("armToggle", armToggle);
