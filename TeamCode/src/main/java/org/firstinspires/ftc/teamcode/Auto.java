@@ -99,9 +99,8 @@ public class Auto extends LinearOpMode {
                 runtime.reset();
                 telemetry.addData("autonomous selected", autoSelector);
                 telemetry.update();
-            } else if (((gamepad1.dpad_left) && (autoSelector != AutoSelector.TEST3) && (autoSelector != AutoSelector.TEST2) &&
-                    (time > SELECTOR_DELAY_TIME)) || ((gamepad1.dpad_right) && (autoSelector != AutoSelector.TEST2) &&
-                    (time > SELECTOR_DELAY_TIME))) {
+            } else if (((gamepad1.dpad_left) && (autoSelector != AutoSelector.TEST3) && (time > SELECTOR_DELAY_TIME)) ||
+                    ((gamepad1.dpad_right) && (autoSelector != AutoSelector.TEST2) && (time > SELECTOR_DELAY_TIME))) {
                 autoSelector = AutoSelector.TEST3;
                 runtime.reset();
                 telemetry.addData("autonomous selected", autoSelector);
