@@ -85,7 +85,7 @@ public class HardwareRobot {
         leftExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
+        /*
         leftExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftExtension.setTargetPosition(BASE_POSITION);
         leftExtension.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -95,6 +95,8 @@ public class HardwareRobot {
         rightExtension.setTargetPosition(BASE_POSITION);
         rightExtension.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightExtension.setPower(EXTENSION_SPEED);
+
+         */
 
 
 
@@ -174,6 +176,11 @@ public class HardwareRobot {
 
     public void nomnomStop(){
         intake.setPower(0);
+    }
+
+    public void extend(double power){
+        leftExtension.setPower(power);
+        rightExtension.setPower(power);
     }
 
 

@@ -87,9 +87,7 @@ public class DriverControl extends OpMode
         double strafe = -gamepad1.left_stick_x;
         boolean inSlowMode = gamepad1.right_bumper;
 
-        if (gamepad1.b){
-            robot.retract();
-        }
+
 
         robot.drive.setDrivePowers(new PoseVelocity2d(
                 new Vector2d(
@@ -150,20 +148,21 @@ public class DriverControl extends OpMode
          aLast = aCurrent;
 
         //extension toggle
-        bCurrent = gamepad1.b;
+//        bCurrent = gamepad1.b;
+//
+//        if(bCurrent && !bLast && clock.milliseconds() > TOGGLE_DELAY){
+//            bToggle = !bToggle;
+//            clock.reset();
+//        }
+//        if(bToggle){
+//            robot.extension();
+//        }
+//        else{
+//            robot.retract();
+//        }
+//        bLast = bCurrent;
 
-        if(bCurrent && !bLast && clock.milliseconds() > TOGGLE_DELAY){
-            bToggle = !bToggle;
-            clock.reset();
-        }
-        if(bToggle){
-            robot.extension();
-        }
-        else{
-            robot.retract();
-        }
-        bLast = bCurrent;
-
+        robot.extend(gamepad1.right_trigger-gamepad1.left_trigger);
         // cool
 
         //arm has to rotate to (docked, staging position for placement, first rung position,
