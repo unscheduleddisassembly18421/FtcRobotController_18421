@@ -48,6 +48,8 @@ public class Auto extends LinearOpMode {
         while (opModeInInit()) {
             double time = runtime.milliseconds();
 
+            // autonomous selector
+
             if (((gamepad1.dpad_down) && (autoSelector == AutoSelector.RED_MID) && (time > SELECTOR_DELAY_TIME)) ||
                     ((gamepad1.dpad_up) && (autoSelector == AutoSelector.RED_BASKET) && (time > SELECTOR_DELAY_TIME))) {
                 autoSelector = AutoSelector.BLUE_BASKET;
