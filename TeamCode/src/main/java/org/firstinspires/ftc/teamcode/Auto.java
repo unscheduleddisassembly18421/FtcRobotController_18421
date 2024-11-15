@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.DriveConstants.ALIGN_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.DOCK_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.DUNK_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.VERTICAL_POSITION;
@@ -33,9 +32,7 @@ public class Auto extends LinearOpMode {
     public static double ARM_ROTATE_DELAY_TIME = 2;
     public static double CLAW_ROTATE_DELAY_TIME = 0.25;
     private final ElapsedTime runtime = new ElapsedTime();
-
     public enum AutoSelector {BLUE_BASKET, RED_BASKET, BLUE_OBZ, RED_OBZ, BLUE_MID, RED_MID, TEST, TEST2,TEST3}
-
     public AutoSelector autoSelector = AutoSelector.BLUE_BASKET;
 
     @Override
@@ -126,7 +123,7 @@ public class Auto extends LinearOpMode {
             }
         }
 
-        Pose2d initialPose;
+        Pose2d initialPose = null;
         if (autoSelector == AutoSelector.BLUE_BASKET) {
             initialPose = new Pose2d(36, 64, Math.toRadians(90));
         } else if (autoSelector == AutoSelector.BLUE_OBZ) {
@@ -137,7 +134,7 @@ public class Auto extends LinearOpMode {
             initialPose = new Pose2d(12, -64, Math.toRadians(270));
         } else if (autoSelector == AutoSelector.BLUE_MID) {
             initialPose = new Pose2d(12, 64, Math.toRadians(90));
-        } else {
+        } else if(autoSelector == AutoSelector.RED_MID) {
             initialPose = new Pose2d(-12, -64, Math.toRadians(270));
         }
 
@@ -146,11 +143,12 @@ public class Auto extends LinearOpMode {
         // blue basket unique movements
 
         TrajectoryActionBuilder action0_0 = r.drive.actionBuilder(initialPose)
-                .splineTo(new Vector2d(6,33),Math.toRadians(90));
-        TrajectoryActionBuilder action0_1 = r.drive.actionBuilder(initialPose)
+                .setTangent(Math.toRadians(-90))
+                .splineTo(new Vector2d(6,33),Math.toRadians(-90));
+        TrajectoryActionBuilder action0_1 = action0_0.fresh()
                 .setTangent(Math.toRadians(90))
                 .lineToY(38);
-        Action Obz_0 = action0_0.fresh()
+        Action Obz_0 = action0_1.fresh()
                 .setTangent(Math.toRadians(180))
                 .splineTo(new Vector2d(-60,60), Math.toRadians(90))
                 .build();
@@ -169,10 +167,10 @@ public class Auto extends LinearOpMode {
         TrajectoryActionBuilder action2_0 = r.drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(90))
                 .splineTo(new Vector2d(-6,-33),Math.toRadians(90));
-        TrajectoryActionBuilder action2_1 = r.drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder action2_1 = action2_0.fresh()
                 .setTangent(Math.toRadians(-90))
                 .lineToY(-38);
-        Action Obz_2 = action2_0.fresh()
+        Action Obz_2 = action2_1.fresh()
                 .setTangent(0)
                 .splineTo(new Vector2d(60,-60),Math.toRadians(270))
                 .build();
@@ -343,14 +341,14 @@ public class Auto extends LinearOpMode {
             Actions.runBlocking(
 //
                     new SequentialAction(
-                            r.rotateArm(ALIGN_POSITION),
-                            new SleepAction(3),
-                            r.rotateArm(DUNK_POSITION),
-                            new SleepAction(3),
-                            r.clawOpen(),
-                            new SleepAction(3),
                             r.rotateArm(DOCK_POSITION),
-                            new SleepAction(3)
+                            new SleepAction(ARM_ROTATE_DELAY_TIME),
+                            r.rotateArm(VERTICAL_POSITION),
+                            new SleepAction(ARM_ROTATE_DELAY_TIME),
+                            r.clawOpen(),
+                            new SleepAction(ARM_ROTATE_DELAY_TIME),
+                            r.rotateArm(DUNK_POSITION),
+                            new SleepAction(ARM_ROTATE_DELAY_TIME)
 
                     )
             );
