@@ -18,9 +18,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /***
- * This is the 2024-2025 Main Autonomous program containing 4 main auto sub codes.
- *  1. Auto1
- *      Travels from ___ to ___ in...
+ * This is the 2024-2025 Main Autonomous program containing 4 main auto sub codes, and 6 sub codes in total
+ *  1. Autonomous Paths
+ *      - Travels to submersible and places specimen, then they park in the observation zone
+ *  2. controls
+ *      - Dpad up and down cycles through a list of the six main autonomous sub codes
+ *      - Dpad left and right cycles through a list of the three test autonomous sub codes
+ *      - When in the test cycle code just press Dpad up or down to exit the test code cycle and reset to Blue Basket or Red Mid
  */
 
 @Config
@@ -44,8 +48,6 @@ public class Auto extends LinearOpMode {
         HardwareRobotAuto r = new HardwareRobotAuto(telemetry, hardwareMap);
         while (opModeInInit()) {
             double time = runtime.milliseconds();
-
-            // autonomous selector 1
 
             if (((gamepad1.dpad_down) && (autoSelector == AutoSelector.RED_MID) && (time > SELECTOR_DELAY_TIME)) ||
                     ((gamepad1.dpad_up) && (autoSelector == AutoSelector.RED_BASKET) && (time > SELECTOR_DELAY_TIME))) {
@@ -85,14 +87,14 @@ public class Auto extends LinearOpMode {
                 telemetry.update();
             }
 
-            if(((gamepad1.dpad_left) && (autoSelector != AutoSelector.TEST) && (autoSelector != AutoSelector.TEST2) &&
+            if (((gamepad1.dpad_left) && (autoSelector != AutoSelector.TEST) && (autoSelector != AutoSelector.TEST2) &&
                     (time > SELECTOR_DELAY_TIME)) || ((gamepad1.dpad_right) && (autoSelector == AutoSelector.TEST2) &&
                     (time > SELECTOR_DELAY_TIME))) {
                 autoSelector = AutoSelector.TEST;
                 runtime.reset();
                 telemetry.addData("autonomous selected", autoSelector);
                 telemetry.update();
-            } else if(((gamepad1.dpad_left) && (autoSelector == AutoSelector.TEST) && (time > SELECTOR_DELAY_TIME)) ||
+            } else if (((gamepad1.dpad_left) && (autoSelector == AutoSelector.TEST) && (time > SELECTOR_DELAY_TIME)) ||
                     ((gamepad1.dpad_right) && (autoSelector == AutoSelector.TEST3) && (time > SELECTOR_DELAY_TIME))) {
                 autoSelector = AutoSelector.TEST2;
                 runtime.reset();
@@ -113,7 +115,7 @@ public class Auto extends LinearOpMode {
                 runtime.reset();
                 telemetry.addData("autonomous selected", autoSelector);
                 telemetry.update();
-            } else if(((gamepad1.dpad_down) && (autoSelector == AutoSelector.TEST) && (time > SELECTOR_DELAY_TIME)) ||
+            } else if (((gamepad1.dpad_down) && (autoSelector == AutoSelector.TEST) && (time > SELECTOR_DELAY_TIME)) ||
                     ((gamepad1.dpad_down) && (autoSelector == AutoSelector.TEST2) && (time > SELECTOR_DELAY_TIME)) ||
                     ((gamepad1.dpad_down) && (autoSelector == AutoSelector.TEST3) && (time > SELECTOR_DELAY_TIME))) {
                 autoSelector = AutoSelector.RED_MID;
@@ -123,7 +125,7 @@ public class Auto extends LinearOpMode {
             }
         }
 
-        Pose2d initialPose = null;
+        Pose2d initialPose;
         if (autoSelector == AutoSelector.BLUE_BASKET) {
             initialPose = new Pose2d(36, 64, Math.toRadians(90));
         } else if (autoSelector == AutoSelector.BLUE_OBZ) {
@@ -136,9 +138,13 @@ public class Auto extends LinearOpMode {
             initialPose = new Pose2d(12, 64, Math.toRadians(90));
         } else if(autoSelector == AutoSelector.RED_MID) {
             initialPose = new Pose2d(-12, -64, Math.toRadians(270));
+        } else {
+            initialPose = new Pose2d(0,0,0);
         }
 
-        r.drive.pose = initialPose;
+        // else statement for test autos and for errors i guess
+
+        // r.drive.pose = initialPose;
 
         // blue basket unique movements
 
@@ -226,8 +232,6 @@ public class Auto extends LinearOpMode {
                             new SleepAction(CLAW_ROTATE_DELAY_TIME),
                             moveBack_0,
                             Obz_0
-
-
                     )
             );
         } else if (autoSelector == AutoSelector.BLUE_OBZ) {
@@ -242,8 +246,6 @@ public class Auto extends LinearOpMode {
                             new SleepAction(CLAW_ROTATE_DELAY_TIME),
                             moveBack_0,
                             Obz_1
-
-
                     )
             );
         } else if (autoSelector == AutoSelector.RED_BASKET) {
@@ -337,18 +339,38 @@ public class Auto extends LinearOpMode {
             );
         }
         if (autoSelector == AutoSelector.TEST2) {
-            //telemetry.setAutoClear(false);
             Actions.runBlocking(
-//
                     new SequentialAction(
                             r.rotateArm(DOCK_POSITION),
+                            telemetryPacket -> {
+                                telemetry.addData("dock position",r.arm.getPosition());
+                                telemetry.update();
+                                return false;
+                            },
                             new SleepAction(ARM_ROTATE_DELAY_TIME),
                             r.rotateArm(VERTICAL_POSITION),
-                            new SleepAction(ARM_ROTATE_DELAY_TIME),
-                            r.clawOpen(),
+                            telemetryPacket -> {
+                                telemetry.addData("vertical position", r.arm.getPosition());
+                                telemetry.update();
+                                return false;  
+                            },
                             new SleepAction(ARM_ROTATE_DELAY_TIME),
                             r.rotateArm(DUNK_POSITION),
-                            new SleepAction(ARM_ROTATE_DELAY_TIME)
+                            telemetryPacket -> {
+                                telemetry.addData("dunk position", r.arm.getPosition());
+                                telemetry.update();
+                                return false;
+                            },
+                            new SleepAction(ARM_ROTATE_DELAY_TIME),
+                            r.clawOpen(),
+                            telemetryPacket -> {
+                                telemetry.addData("claw open",r.claw.getPosition());
+                                telemetry.addLine("sequence complete");
+                                telemetry.update();
+                                return false;
+                            }
+                            
+                            
 
                     )
             );
