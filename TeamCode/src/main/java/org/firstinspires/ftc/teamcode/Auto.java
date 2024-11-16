@@ -149,11 +149,11 @@ public class Auto extends LinearOpMode {
 
         TrajectoryActionBuilder action0_0 = r.drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(-90))
-                .splineTo(new Vector2d(6,33),Math.toRadians(-90));
+                .splineTo(new Vector2d(6,34.5),Math.toRadians(-90));
         TrajectoryActionBuilder action0_1 = action0_0.fresh()
                 .setTangent(Math.toRadians(90))
                 .lineToY(38);
-        Action Obz_0 = action0_1.fresh()
+        Action Obz_0 = action0_0.fresh()
                 .setTangent(Math.toRadians(180))
                 .splineTo(new Vector2d(-60,60), Math.toRadians(90))
                 .build();
@@ -162,7 +162,7 @@ public class Auto extends LinearOpMode {
 
         TrajectoryActionBuilder action1_0 = r.drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(-90))
-                .splineTo(new Vector2d(-6, 33), Math.toRadians(-90));
+                .splineTo(new Vector2d(-6, 32.75), Math.toRadians(-90));
         Action Obz_1 = action1_0.fresh()
                 .setTangent(Math.toRadians(180))
                 .splineTo(new Vector2d(-60,60),Math.toRadians(90))
@@ -230,7 +230,8 @@ public class Auto extends LinearOpMode {
                             new SleepAction(ARM_ROTATE_DELAY_TIME),
                             r.clawOpen(),
                             new SleepAction(CLAW_ROTATE_DELAY_TIME),
-                            moveBack_0,
+                            r.rotateArm(VERTICAL_POSITION),
+                            new SleepAction(ARM_ROTATE_DELAY_TIME),
                             Obz_0
                     )
             );
