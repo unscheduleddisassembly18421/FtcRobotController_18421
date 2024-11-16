@@ -42,7 +42,7 @@ public class HardwareRobot {
 
     private DcMotor leftExtension = null;
     private DcMotor rightExtension = null;
-    private DcMotor intake = null;
+    public DcMotor intake = null;
     public Servo intakeFlip = null;
     public Servo arm = null;
     public Servo claw = null;
