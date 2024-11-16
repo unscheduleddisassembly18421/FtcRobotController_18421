@@ -6,7 +6,6 @@ import static org.firstinspires.ftc.teamcode.DriveConstants.VERTICAL_POSITION;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
@@ -144,7 +143,7 @@ public class Auto extends LinearOpMode {
 
         // else statement for test autos and for errors i guess
 
-        // r.drive.pose = initialPose;
+        r.drive.pose = initialPose;
 
         // blue basket unique movements
 
@@ -162,7 +161,8 @@ public class Auto extends LinearOpMode {
         // blue obz unique movements
 
         TrajectoryActionBuilder action1_0 = r.drive.actionBuilder(initialPose)
-                .splineTo(new Vector2d(-6, 33), Math.toRadians(90));
+                .setTangent(Math.toRadians(-90))
+                .splineTo(new Vector2d(-6, 33), Math.toRadians(-90));
         Action Obz_1 = action1_0.fresh()
                 .setTangent(Math.toRadians(180))
                 .splineTo(new Vector2d(-60,60),Math.toRadians(90))
@@ -337,8 +337,7 @@ public class Auto extends LinearOpMode {
                             new SleepAction(2)
                     )
             );
-        }
-        if (autoSelector == AutoSelector.TEST2) {
+        } else if (autoSelector == AutoSelector.TEST2) {
             Actions.runBlocking(
                     new SequentialAction(
                             r.rotateArm(DOCK_POSITION),
@@ -368,18 +367,13 @@ public class Auto extends LinearOpMode {
                                 telemetry.addLine("sequence complete");
                                 telemetry.update();
                                 return false;
-                            }
-                            
-                            
-
+                            },
+                            new SleepAction(CLAW_ROTATE_DELAY_TIME)
                     )
             );
 
-        }
-        if (autoSelector == AutoSelector.TEST3) {
-            //telemetry.setAutoClear(false);
+        } else if (autoSelector == AutoSelector.TEST3) {
             Actions.runBlocking(
-//
                     new SequentialAction(
                             r.rotateArm(VERTICAL_POSITION),
                             r.rotateArm(DUNK_POSITION),
@@ -389,10 +383,6 @@ public class Auto extends LinearOpMode {
                             r.rotateArm(DOCK_POSITION),
                             new SleepAction(3)
                     )
-            );
-            Actions.runBlocking(
-//
-                    new ParallelAction()
             );
         }
     }
