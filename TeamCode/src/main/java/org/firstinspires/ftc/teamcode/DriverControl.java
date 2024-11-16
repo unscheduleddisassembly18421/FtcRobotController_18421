@@ -83,8 +83,8 @@ public class DriverControl extends OpMode
         TelemetryPacket packet = new TelemetryPacket();
 
         double drive = -gamepad1.left_stick_y;
-        double turn  =  gamepad1.right_stick_x;
-        double strafe = -gamepad1.left_stick_x;
+        double turn  =  gamepad1.left_stick_x;
+        double strafe = -gamepad1.right_stick_x;
         boolean inSlowMode = gamepad1.right_bumper;
 
 
@@ -161,8 +161,8 @@ public class DriverControl extends OpMode
 //            robot.retract();
 //        }
 //        bLast = bCurrent;
-
-        robot.extend(gamepad1.right_trigger-gamepad1.left_trigger);
+        robot.intake.setPower((gamepad1.right_trigger-gamepad1.left_trigger)/2);
+        //robot.extend(gamepad1.right_trigger-gamepad1.left_trigger);
         // cool
 
         //arm has to rotate to (docked, staging position for placement, first rung position,
