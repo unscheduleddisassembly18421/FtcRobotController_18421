@@ -149,11 +149,12 @@ public class Auto extends LinearOpMode {
 
         TrajectoryActionBuilder action0_0 = r.drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(-90))
-                .splineTo(new Vector2d(6,34.5),Math.toRadians(-90));
+                .splineTo(new Vector2d(6,32.25),Math.toRadians(-90))
+                .endTrajectory();
         TrajectoryActionBuilder action0_1 = action0_0.fresh()
-                .setTangent(Math.toRadians(90))
-                .lineToY(38);
-        Action Obz_0 = action0_0.fresh()
+                .lineToY(40)
+                .endTrajectory();
+        Action Obz_0 = action0_1.fresh()
                 .setTangent(Math.toRadians(180))
                 .splineTo(new Vector2d(-60,60), Math.toRadians(90))
                 .build();
@@ -162,8 +163,14 @@ public class Auto extends LinearOpMode {
 
         TrajectoryActionBuilder action1_0 = r.drive.actionBuilder(initialPose)
                 .setTangent(Math.toRadians(-90))
-                .splineTo(new Vector2d(-6, 32.75), Math.toRadians(-90));
+                .splineTo(new Vector2d(-6, 33), Math.toRadians(-90))
+                .endTrajectory();
+        TrajectoryActionBuilder action1_1 = action1_0.fresh()
+                .lineToY(40)
+                .endTrajectory();
         Action Obz_1 = action1_0.fresh()
+                .setTangent(Math.toRadians(180))
+                .lineToX(-36)
                 .setTangent(Math.toRadians(180))
                 .splineTo(new Vector2d(-60,60),Math.toRadians(90))
                 .build();
@@ -202,9 +209,10 @@ public class Auto extends LinearOpMode {
         Action moveBack_0;
         // blue obz
         Action submersible_1;
+        Action moveBack_1;
         // red basket
         Action submersible_2;
-        Action moveBack_1;
+        Action moveBack_2;
         // red obz
         Action submersible_3;
 
@@ -213,9 +221,10 @@ public class Auto extends LinearOpMode {
         moveBack_0 = action0_1.build();
         // blue obz UNIQUE actions
         submersible_1 = action1_0.build();
+        moveBack_1 = action1_1.build();
         // red basket UNiQUE actions
         submersible_2 = action2_0.build();
-        moveBack_1 = action2_1.build();
+        moveBack_2 = action2_1.build();
         // red obz UNIQUE actions
         submersible_3 = action3_0.build();
 
@@ -230,8 +239,7 @@ public class Auto extends LinearOpMode {
                             new SleepAction(ARM_ROTATE_DELAY_TIME),
                             r.clawOpen(),
                             new SleepAction(CLAW_ROTATE_DELAY_TIME),
-                            r.rotateArm(VERTICAL_POSITION),
-                            new SleepAction(ARM_ROTATE_DELAY_TIME),
+                            moveBack_0,
                             Obz_0
                     )
             );
@@ -245,7 +253,7 @@ public class Auto extends LinearOpMode {
                             new SleepAction(ARM_ROTATE_DELAY_TIME),
                             r.clawOpen(),
                             new SleepAction(CLAW_ROTATE_DELAY_TIME),
-                            moveBack_0,
+                            moveBack_1,
                             Obz_1
                     )
             );
@@ -259,7 +267,7 @@ public class Auto extends LinearOpMode {
                             new SleepAction(ARM_ROTATE_DELAY_TIME),
                             r.clawOpen(),
                             new SleepAction(CLAW_ROTATE_DELAY_TIME),
-                            moveBack_1,
+                            moveBack_2,
                             Obz_2
 
 
@@ -275,7 +283,7 @@ public class Auto extends LinearOpMode {
                             new SleepAction(ARM_ROTATE_DELAY_TIME),
                             r.clawOpen(),
                             new SleepAction(CLAW_ROTATE_DELAY_TIME),
-                            moveBack_1,
+                            moveBack_2,
                             Obz_3
                     )
             );
@@ -304,7 +312,7 @@ public class Auto extends LinearOpMode {
                             new SleepAction(ARM_ROTATE_DELAY_TIME),
                             r.clawOpen(),
                             new SleepAction(CLAW_ROTATE_DELAY_TIME),
-                            moveBack_1,
+                            moveBack_2,
                             Obz_2
 
                     )

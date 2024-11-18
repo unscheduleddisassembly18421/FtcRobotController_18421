@@ -24,7 +24,8 @@ public class DriveConstants {
 
     //arm
     public static double DOCK_POSITION = 0.07; // grab
-    public static double VERTICAL_POSITION = 0.38; // dunking
+    public static double VERTICAL_POSITION = 0.4;
+    // dunking
     public static double ALIGN_POSITION = .72; // delete
     public static double DUNK_POSITION = 0.03; // start position
 
