@@ -26,6 +26,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *      - When in the test cycle code just press Dpad up or down to exit the test code cycle and reset to Blue Basket or Red Mid
  */
 
+/* TODO
+    Trajectories
+    - only need 3 trajectories and only need 2 unique sub-codes
+    - fix trajectories by adding .endTrajectory(); at end of each paths
+    - remake trajectories
+
+*/
 @Config
 
 @Autonomous(name = "Autonomous2024-2025")
@@ -35,57 +42,40 @@ public class Auto extends LinearOpMode {
     public static double ARM_ROTATE_DELAY_TIME = 2;
     public static double CLAW_ROTATE_DELAY_TIME = 0.25;
     private final ElapsedTime runtime = new ElapsedTime();
-    public enum AutoSelector {BLUE_BASKET, RED_BASKET, BLUE_OBZ, RED_OBZ, BLUE_MID, RED_MID, TEST, TEST2,TEST3}
-    public AutoSelector autoSelector = AutoSelector.BLUE_BASKET;
+    public enum AutoSelector {BASKET, OBZ, MID, TEST, TEST2, TEST3}
+    public AutoSelector autoSelector = AutoSelector.BASKET;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
         //telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetry.addData("Status", "Initialized");
+        telemetry.addData("autonomous selected", autoSelector);
         telemetry.update();
         HardwareRobotAuto r = new HardwareRobotAuto(telemetry, hardwareMap);
+
         while (opModeInInit()) {
             double time = runtime.milliseconds();
 
-            if (((gamepad1.dpad_down) && (autoSelector == AutoSelector.RED_MID) && (time > SELECTOR_DELAY_TIME)) ||
-                    ((gamepad1.dpad_up) && (autoSelector == AutoSelector.RED_BASKET) && (time > SELECTOR_DELAY_TIME))) {
-                autoSelector = AutoSelector.BLUE_BASKET;
+            if(((gamepad1.dpad_up) && (time > SELECTOR_DELAY_TIME) && (autoSelector == AutoSelector.OBZ)) ||
+                    ((gamepad1.dpad_down) && (time > SELECTOR_DELAY_TIME) && (autoSelector == AutoSelector.MID))) {
+                autoSelector = AutoSelector.BASKET;
                 runtime.reset();
-                telemetry.addData("autonomous selected ", autoSelector);
+                telemetry.addData("autonomous selected", autoSelector);
                 telemetry.update();
-            } else if (((gamepad1.dpad_down) && (autoSelector == AutoSelector.BLUE_BASKET) && (time > SELECTOR_DELAY_TIME)) ||
-                    ((gamepad1.dpad_up) && (autoSelector == AutoSelector.BLUE_OBZ) && (time > SELECTOR_DELAY_TIME))) {
-                autoSelector = AutoSelector.RED_BASKET;
+            } else if(((gamepad1.dpad_up) && (time > SELECTOR_DELAY_TIME) && (autoSelector == AutoSelector.MID)) ||
+                    ((gamepad1.dpad_down) && (time > SELECTOR_DELAY_TIME) && (autoSelector == AutoSelector.BASKET))) {
+                autoSelector = AutoSelector.OBZ;
                 runtime.reset();
-                telemetry.addData("autonomous selected ", autoSelector);
+                telemetry.addData("autonomous selected", autoSelector);
                 telemetry.update();
-            } else if (((gamepad1.dpad_down) && (autoSelector == AutoSelector.RED_BASKET) && (time > SELECTOR_DELAY_TIME)) ||
-                    ((gamepad1.dpad_up) && (autoSelector == AutoSelector.RED_OBZ) && (time > SELECTOR_DELAY_TIME))) {
-                autoSelector = AutoSelector.BLUE_OBZ;
+            } else if(((gamepad1.dpad_up) && (time > SELECTOR_DELAY_TIME) && (autoSelector == AutoSelector.BASKET)) ||
+                    ((gamepad1.dpad_down) && (time > SELECTOR_DELAY_TIME) && (autoSelector == AutoSelector.OBZ))) {
+                autoSelector = AutoSelector.MID;
                 runtime.reset();
-                telemetry.addData("autonomous selected ", autoSelector);
-                telemetry.update();
-            } else if (((gamepad1.dpad_down) && (autoSelector == AutoSelector.BLUE_OBZ) && (time > SELECTOR_DELAY_TIME)) ||
-                    ((gamepad1.dpad_up) && (autoSelector == AutoSelector.BLUE_MID) && (time > SELECTOR_DELAY_TIME))) {
-                autoSelector = AutoSelector.RED_OBZ;
-                runtime.reset();
-                telemetry.addData("autonomous selected ", autoSelector);
-                telemetry.update();
-            } else if (((gamepad1.dpad_down) && (autoSelector == AutoSelector.RED_OBZ) && (time > SELECTOR_DELAY_TIME)) ||
-                    ((gamepad1.dpad_up) && (autoSelector == AutoSelector.RED_MID) && (time > SELECTOR_DELAY_TIME))) {
-                autoSelector = AutoSelector.BLUE_MID;
-                runtime.reset();
-                telemetry.addData("autonomous selected ", autoSelector);
-                telemetry.update();
-            } else if (((gamepad1.dpad_down) && (autoSelector == AutoSelector.BLUE_MID) && (time > SELECTOR_DELAY_TIME)) ||
-                    ((gamepad1.dpad_up) && (autoSelector == AutoSelector.BLUE_BASKET) && (time > SELECTOR_DELAY_TIME))) {
-                autoSelector = AutoSelector.RED_MID;
-                runtime.reset();
-                telemetry.addData("autonomous selected ", autoSelector);
+                telemetry.addData("autonomous selected", autoSelector);
                 telemetry.update();
             }
-
             if (((gamepad1.dpad_left) && (autoSelector != AutoSelector.TEST) && (autoSelector != AutoSelector.TEST2) &&
                     (time > SELECTOR_DELAY_TIME)) || ((gamepad1.dpad_right) && (autoSelector == AutoSelector.TEST2) &&
                     (time > SELECTOR_DELAY_TIME))) {
@@ -110,14 +100,14 @@ public class Auto extends LinearOpMode {
             if (((gamepad1.dpad_up) && (autoSelector == AutoSelector.TEST) && (time > SELECTOR_DELAY_TIME)) ||
                     ((gamepad1.dpad_up) && (autoSelector == AutoSelector.TEST2) && (time > SELECTOR_DELAY_TIME)) ||
                     ((gamepad1.dpad_up) && (autoSelector == AutoSelector.TEST3) && (time > SELECTOR_DELAY_TIME))) {
-                autoSelector = AutoSelector.BLUE_BASKET;
+                autoSelector = AutoSelector.BASKET;
                 runtime.reset();
                 telemetry.addData("autonomous selected", autoSelector);
                 telemetry.update();
             } else if (((gamepad1.dpad_down) && (autoSelector == AutoSelector.TEST) && (time > SELECTOR_DELAY_TIME)) ||
                     ((gamepad1.dpad_down) && (autoSelector == AutoSelector.TEST2) && (time > SELECTOR_DELAY_TIME)) ||
                     ((gamepad1.dpad_down) && (autoSelector == AutoSelector.TEST3) && (time > SELECTOR_DELAY_TIME))) {
-                autoSelector = AutoSelector.RED_MID;
+                autoSelector = AutoSelector.MID;
                 runtime.reset();
                 telemetry.addData("autonomous selected", autoSelector);
                 telemetry.update();
@@ -125,18 +115,12 @@ public class Auto extends LinearOpMode {
         }
 
         Pose2d initialPose;
-        if (autoSelector == AutoSelector.BLUE_BASKET) {
-            initialPose = new Pose2d(36, 64, Math.toRadians(90));
-        } else if (autoSelector == AutoSelector.BLUE_OBZ) {
-            initialPose = new Pose2d(-12, 64, Math.toRadians(90));
-        } else if (autoSelector == AutoSelector.RED_BASKET) {
-            initialPose = new Pose2d(-36, -64, Math.toRadians(270));
-        } else if (autoSelector == AutoSelector.RED_OBZ) {
-            initialPose = new Pose2d(12, -64, Math.toRadians(270));
-        } else if (autoSelector == AutoSelector.BLUE_MID) {
-            initialPose = new Pose2d(12, 64, Math.toRadians(90));
-        } else if(autoSelector == AutoSelector.RED_MID) {
-            initialPose = new Pose2d(-12, -64, Math.toRadians(270));
+        if (autoSelector == AutoSelector.BASKET) {
+            initialPose = new Pose2d(36, 64, Math.toRadians(270));
+        } else if (autoSelector == AutoSelector.OBZ) {
+            initialPose = new Pose2d(-12, 64, Math.toRadians(270));
+        } else if (autoSelector == AutoSelector.MID) {
+            initialPose = new Pose2d(12, 64, Math.toRadians(270));
         } else {
             initialPose = new Pose2d(0,0,0);
         }
@@ -145,19 +129,39 @@ public class Auto extends LinearOpMode {
 
         r.drive.pose = initialPose;
 
-        // blue basket unique movements
+        //  basket path
 
         TrajectoryActionBuilder action0_0 = r.drive.actionBuilder(initialPose)
-                .setTangent(Math.toRadians(-90))
-                .splineTo(new Vector2d(6,32.25),Math.toRadians(-90))
+                .setTangent(Math.toRadians(270))
+                .splineTo(new Vector2d(6, 33), Math.toRadians(270))
                 .endTrajectory();
         TrajectoryActionBuilder action0_1 = action0_0.fresh()
+                .setTangent(Math.toRadians(45))
+                .splineToSplineHeading(new Pose2d(48,48,Math.toRadians(90)),0)
+                .setTangent(Math.toRadians(270))
                 .lineToY(40)
                 .endTrajectory();
-        Action Obz_0 = action0_1.fresh()
+        TrajectoryActionBuilder action0_2 = action0_1.fresh()
+                .strafeToSplineHeading(new Vector2d(56,56),Math.toRadians(45))
+                .endTrajectory();
+        TrajectoryActionBuilder action0_3 = action0_2.fresh()
+                .strafeToSplineHeading(new Vector2d(58,40),Math.toRadians(90))
+                .lineToY(35)
+                .endTrajectory();
+        TrajectoryActionBuilder action0_4 = action0_3.fresh()
+                .strafeToSplineHeading(new Vector2d(56,56),Math.toRadians(45))
+                .endTrajectory();
+        TrajectoryActionBuilder action0_5 = action0_4.fresh()
+                .strafeToSplineHeading(new Vector2d(52,25.5),Math.toRadians(180))
                 .setTangent(Math.toRadians(180))
-                .splineTo(new Vector2d(-60,60), Math.toRadians(90))
-                .build();
+                .lineToX(60)
+                .endTrajectory();
+        TrajectoryActionBuilder action0_6 = action0_5.fresh()
+                .strafeToSplineHeading(new Vector2d(56,56),Math.toRadians(45))
+                .endTrajectory();
+        TrajectoryActionBuilder action0_7 = action0_6.fresh()
+                .setTangent(Math.toRadians(225))
+                .splineTo(new Vector2d(28,0),Math.toRadians(180));
 
         // blue obz unique movements
 
@@ -206,7 +210,13 @@ public class Auto extends LinearOpMode {
         if (isStopRequested()) return;
         // blue basket
         Action submersible_0;
-        Action moveBack_0;
+        Action spikeOne;
+        Action basket_0;
+        Action spikeTwo;
+        Action basket_1;
+        Action spikeThree;
+        Action basket_2;
+        Action ascent;
         // blue obz
         Action submersible_1;
         Action moveBack_1;
@@ -216,9 +226,15 @@ public class Auto extends LinearOpMode {
         // red obz
         Action submersible_3;
 
-        // blue basket UNIQUE actions
+        // basket
         submersible_0 = action0_0.build();
-        moveBack_0 = action0_1.build();
+        spikeOne = action0_1.build();
+        basket_0 = action0_2.build();
+        spikeTwo = action0_3.build();
+        basket_1 = action0_4.build();
+        spikeThree = action0_5.build();
+        basket_2 = action0_6.build();
+        ascent = action0_7.build();
         // blue obz UNIQUE actions
         submersible_1 = action1_0.build();
         moveBack_1 = action1_1.build();
@@ -229,21 +245,20 @@ public class Auto extends LinearOpMode {
         submersible_3 = action3_0.build();
 
         //run code
-        if (autoSelector == AutoSelector.BLUE_BASKET) {
+        if (autoSelector == AutoSelector.BASKET) {
             Actions.runBlocking(
                     new SequentialAction(
-                            r.rotateArm(VERTICAL_POSITION),
-                            new SleepAction(ARM_ROTATE_DELAY_TIME),
                             submersible_0,
-                            r.rotateArm(DUNK_POSITION),
-                            new SleepAction(ARM_ROTATE_DELAY_TIME),
-                            r.clawOpen(),
-                            new SleepAction(CLAW_ROTATE_DELAY_TIME),
-                            moveBack_0,
-                            Obz_0
+                            spikeOne,
+                            basket_0,
+                            spikeTwo,
+                            basket_1,
+                            spikeThree,
+                            basket_2,
+                            ascent
                     )
             );
-        } else if (autoSelector == AutoSelector.BLUE_OBZ) {
+        } else if (autoSelector == AutoSelector.OBZ) {
             Actions.runBlocking(
                     new SequentialAction(
                             r.rotateArm(VERTICAL_POSITION),
@@ -257,66 +272,20 @@ public class Auto extends LinearOpMode {
                             Obz_1
                     )
             );
-        } else if (autoSelector == AutoSelector.RED_BASKET) {
+        } else if (autoSelector == AutoSelector.MID) {
             Actions.runBlocking(
                     new SequentialAction(
-                            r.rotateArm(VERTICAL_POSITION),
-                            new SleepAction(ARM_ROTATE_DELAY_TIME),
-                            submersible_2,
-                            r.rotateArm(DUNK_POSITION),
-                            new SleepAction(ARM_ROTATE_DELAY_TIME),
-                            r.clawOpen(),
-                            new SleepAction(CLAW_ROTATE_DELAY_TIME),
-                            moveBack_2,
-                            Obz_2
-
-
-                    )
-            );
-        } else if (autoSelector == AutoSelector.RED_OBZ) {
-            Actions.runBlocking(
-                    new SequentialAction(
-                            r.rotateArm(VERTICAL_POSITION),
-                            new SleepAction(ARM_ROTATE_DELAY_TIME),
-                            submersible_3,
-                            r.rotateArm(DUNK_POSITION),
-                            new SleepAction(ARM_ROTATE_DELAY_TIME),
-                            r.clawOpen(),
-                            new SleepAction(CLAW_ROTATE_DELAY_TIME),
-                            moveBack_2,
-                            Obz_3
-                    )
-            );
-        } else if (autoSelector == AutoSelector.BLUE_MID) {
-            Actions.runBlocking(
-                    new SequentialAction(
-                            r.rotateArm(VERTICAL_POSITION),
-                            new SleepAction(ARM_ROTATE_DELAY_TIME),
                             submersible_0,
-                            r.rotateArm(DUNK_POSITION),
-                            new SleepAction(ARM_ROTATE_DELAY_TIME),
-                            r.clawOpen(),
-                            new SleepAction(CLAW_ROTATE_DELAY_TIME),
-                            moveBack_0,
-                            Obz_0
-
+                            spikeOne,
+                            basket_0,
+                            spikeTwo,
+                            basket_1,
+                            spikeThree,
+                            basket_2,
+                            ascent
                     )
             );
-        } else if (autoSelector == AutoSelector.RED_MID) {
-            Actions.runBlocking(
-                    new SequentialAction(
-                            r.rotateArm(VERTICAL_POSITION),
-                            new SleepAction(ARM_ROTATE_DELAY_TIME),
-                            submersible_2,
-                            r.rotateArm(DUNK_POSITION),
-                            new SleepAction(ARM_ROTATE_DELAY_TIME),
-                            r.clawOpen(),
-                            new SleepAction(CLAW_ROTATE_DELAY_TIME),
-                            moveBack_2,
-                            Obz_2
 
-                    )
-            );
         }
 
         // test stuff
