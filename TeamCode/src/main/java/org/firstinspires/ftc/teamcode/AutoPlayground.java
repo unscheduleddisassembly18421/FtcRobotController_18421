@@ -39,6 +39,7 @@ public class AutoPlayground extends LinearOpMode {
 
     public enum AutoSelector {BASKET, OBZ, YADA}
 
+
     public AutoSelector autoSelector = AutoSelector.BASKET;
 
     @Override

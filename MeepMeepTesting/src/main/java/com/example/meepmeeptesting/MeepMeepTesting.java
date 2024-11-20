@@ -13,22 +13,26 @@ public class MeepMeepTesting {
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
                 String blahblah = "blueauto3";
 
-                if (blahblah.equals("blueauto1_2.0")) {
+                if (blahblah.equals("blueauto1")) {
                     myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(12, 64, Math.toRadians(270)))
-                                    .setTangent(Math.toRadians(270))
-                            .splineTo(new Vector2d(6, 33), Math.toRadians(270))
+                                   // .setTangent(Math.toRadians(270))
+                            //.splineTo(new Vector2d(6, 33), Math.toRadians(270))
                                     //.strafeTo(new Vector2d(6,48))
                                     //.setTangent(Math.toRadians(45))
                                     //.lineToXSplineHeading(48,Math.toRadians(90))
                                     //.setTangent(Math.toRadians(270))
-                                    .setTangent(Math.toRadians(45))
-                                    .splineToSplineHeading(new Pose2d(48,48,Math.toRadians(90)),0)
                                     .setTangent(Math.toRadians(270))
-                                    .lineToY(40)
+                                            .splineTo(new Vector2d(56,56),Math.toRadians(45))
+                                    //.setTangent(Math.toRadians(45))
+                                    //.splineToSplineHeading(new Pose2d(48,48,Math.toRadians(90)),0)
+                                    .setTangent(Math.toRadians(225))
+                                    .strafeToSplineHeading(new Vector2d(48,48),Math.toRadians(90))
+                                    .setTangent(Math.toRadians(270))
+                                    .lineToY(35)
                                     .strafeToSplineHeading(new Vector2d(56,56),Math.toRadians(45))
                                     .strafeToSplineHeading(new Vector2d(58,40),Math.toRadians(90))
                                     .setTangent(Math.toRadians(270))
@@ -50,8 +54,9 @@ public class MeepMeepTesting {
                             .start();
                 } else if (blahblah.equals("blueauto3")) {
                     myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-12,64, Math.toRadians(270)))
-                                    .setTangent(Math.toRadians(270))
-                                    .splineTo(new Vector2d(-6,33),Math.toRadians(270))
+                                    //.setTangent(Math.toRadians(270))
+                                    //.splineTo(new Vector2d(-6,33),Math.toRadians(270))
+                                    .strafeTo(new Vector2d(-6,33))
                                             .setTangent(Math.toRadians(135))
                                             .splineToConstantHeading(new Vector2d(-30,30),Math.toRadians(270))
                                             .lineToY(25)
@@ -59,16 +64,33 @@ public class MeepMeepTesting {
                                             .splineToSplineHeading(new Pose2d(-43,12,Math.toRadians(180)),Math.toRadians(180))
                                             .setTangent(Math.toRadians(90))
                                             .lineToY(56)
-                                            .strafeToSplineHeading(new Vector2d(-48,38),Math.toRadians(90))
+                                            //.lineToY(20)
+                                    .setTangent(Math.toRadians(270))
+                                            .splineToConstantHeading(new Vector2d(-54,12),Math.toRadians(180))
+                                            .lineToX(-54)
                                             .setTangent(Math.toRadians(90))
-                                            .lineToY(60)
-                                            .setTangent(0)
-                                            .splineToSplineHeading(new Pose2d(-6,33,Math.toRadians(-90)),Math.toRadians(270))
+                                            .lineToY(56)
+                                            .lineToY(40)
+                                            .strafeToSplineHeading(new Vector2d(-36,56),Math.toRadians(90))
+                                    .setTangent(Math.toRadians(90))
+                                    .lineToY(60)
+                                            .strafeToSplineHeading(new Vector2d(-2,33),Math.toRadians(-90))
+                                            .strafeToSplineHeading(new Vector2d(-36,56),Math.toRadians(90))
+                                    .setTangent(Math.toRadians(90))
+                                    .lineToY(60)
+                            .strafeToSplineHeading(new Vector2d(0,33),Math.toRadians(-90))
+                            .strafeToSplineHeading(new Vector2d(-36,56),Math.toRadians(90))
+                            .setTangent(Math.toRadians(90))
+                            .lineToY(60)
+                            .strafeToSplineHeading(new Vector2d(2,33),Math.toRadians(-90))
+                            .strafeTo(new Vector2d(-56,56))
+
+                            /*
                                     .setTangent(Math.toRadians(90))
                                     .lineToY(40)
-                                    .setTangent(Math.toRadians(180))
-                                            .splineToSplineHeading(new Pose2d(-34,0,0),Math.toRadians(270))
-                            /*
+                            .setTangent(Math.toRadians(180))
+                            .splineToSplineHeading(new Pose2d(-34,0,0),Math.toRadians(270))
+
                                             .setTangent(Math.toRadians(135))
                                             .splineToConstantHeading(new Vector2d(-30,30),Math.toRadians(270))
                                             .lineToY(25)
@@ -82,7 +104,13 @@ public class MeepMeepTesting {
                                             .lineToY(60)
                                             .setTangent(0)
                                             .splineToSplineHeading(new Pose2d(-6,33,Math.toRadians(-90)),Math.toRadians(270))
-                            */
+                                             .setTangent(Math.toRadians(90))
+
+
+                                    .lineToY(40)
+                            .setTangent(Math.toRadians(180))
+                            .splineToSplineHeading(new Pose2d(-34,0,0),Math.toRadians(270))
+*/
 
                                     //.splineToConstantHeading()
                             .build());
@@ -140,27 +168,10 @@ public class MeepMeepTesting {
                             .addEntity(myBot)
                             .start();
                 } else if(blahblah.equals("test")){
-                    myBot.runAction(
-                            new SequentialAction(
-                                    myBot.getDrive().actionBuilder(new Pose2d(12,-65.25,Math.toRadians(90)))
-
-                                            .build()
-                            ));
-
-
-//                            myBot.getDrive().actionBuilder(new Pose2d(12,-65.25,Math.toRadians(90)))
-//                            .splineTo(new Vector2d(6,-38),Math.toRadians(90))
-//                            .setTangent(0)
-//                            .lineToXSplineHeading(48,Math.toRadians(270))
-//                            .setTangent(Math.toRadians(-90))
-//                            .lineToY(-56)
-//                            .setTangent(Math.toRadians(65))
-//                            .lineToY(-38)
-//                            .setTangent(Math.toRadians(90))
-//                            .lineToY(-56)
-//                            .build());
-
-
+                    myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-12,-64,Math.toRadians(270)))
+                                    .setTangent(Math.toRadians(270))
+                                    .lineToY(-4)
+                                    .build());
                     meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
                             .setDarkMode(true)
                             .setBackgroundAlpha(0.95f)
