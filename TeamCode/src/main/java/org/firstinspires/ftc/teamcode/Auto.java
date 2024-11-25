@@ -20,7 +20,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * This is the 2024-2025 Main Autonomous program containing 2 main auto sub codes, and 10 sub codes in total
  *  1. Autonomous Paths
  *      - BASKET: can place specimen or sample then places three other samples into basket and parks in ascent
- *      - OBZ: hangs specimen (doesn't have sample autonomous yet) and then
+ *      - OBZ: hangs specimen and then pushes two samples into the observation zone for the human player
+ *             to make into specimens, it hangs 4 specimens in total
  *  2. controls
  *      - Dpad up and down cycles through a list of the three main autonomous sub codes
  *      - Dpad left and right cycles through a list of the three test autonomous sub codes
@@ -28,8 +29,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *      - press right bumper to toggle having a delay at the beginning of autonomous
  *      - press left bumper to toggle between having a specimen at the beginning or sample
  */
-
-// TODO make sample autonomous for OBZ
 
 @Config
 
@@ -44,6 +43,12 @@ public class Auto extends LinearOpMode {
     public AutoSelector autoSelector = AutoSelector.BASKET;
     double ROBOT_DELAY_TIME = 5;
     boolean delay = false;
+
+    /* specimen means multiple things by the way (both relate to specimen)
+        obz - if true it means you have specimen preloaded and human player has specimen
+        basket - if true it means your preloaded with specimen
+     */
+
     boolean specimen = true;
 
     @Override
@@ -194,47 +199,41 @@ public class Auto extends LinearOpMode {
         // obz unique movements
 
         TrajectoryActionBuilder action1_0 = r.drive.actionBuilder(initialPose)
-                .setTangent(Math.toRadians(270))
-                .splineTo(new Vector2d(-6,33),Math.toRadians(270))
+                .strafeTo(new Vector2d(-6,33))
                 .endTrajectory();
         TrajectoryActionBuilder action1_1 = action1_0.fresh()
                 .setTangent(Math.toRadians(135))
-                .splineToConstantHeading(new Vector2d(-30,30),Math.toRadians(270))
-                .lineToY(25)
+                .splineToSplineHeading(new Pose2d(-30,30,Math.toRadians(180)),Math.toRadians(270))
                 .setTangent(Math.toRadians(270))
-                .splineToSplineHeading(new Pose2d(-43,12,Math.toRadians(180)),Math.toRadians(180))
-                .setTangent(Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(-38,12),Math.toRadians(180))
+                .setTangent(Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(-46,24),Math.toRadians(90))
                 .lineToY(56)
-                .lineToY(20)
-                .splineToConstantHeading(new Vector2d(-54,12),Math.toRadians(180))
-                .lineToX(-54)
+                .setTangent(Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(-53,12),Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(-60,24),Math.toRadians(90))
                 .setTangent(Math.toRadians(90))
-                .lineToY(56)
-                .lineToY(40)
-                .strafeToSplineHeading(new Vector2d(-36,56),Math.toRadians(90))
-                .lineToY(60)
+                .lineToY(50)
+                .setTangent(0)
+                .splineToSplineHeading(new Pose2d(-36,60,Math.toRadians(90)),Math.toRadians(45))
                 .endTrajectory();
         TrajectoryActionBuilder action1_2 = action1_1.fresh()
                 .strafeToSplineHeading(new Vector2d(-2,33),Math.toRadians(-90))
                 .endTrajectory();
         TrajectoryActionBuilder action1_3 = action1_2.fresh()
-                .strafeToSplineHeading(new Vector2d(-36,56),Math.toRadians(90))
-                .setTangent(Math.toRadians(90))
-                .lineToY(60)
+                .strafeToSplineHeading(new Vector2d(-36,60),Math.toRadians(90))
                 .endTrajectory();
         TrajectoryActionBuilder action1_4 = action1_3.fresh()
                 .strafeToSplineHeading(new Vector2d(0,33),Math.toRadians(-90))
                 .endTrajectory();
         TrajectoryActionBuilder action1_5 = action1_4.fresh()
-                .strafeToSplineHeading(new Vector2d(-36,56),Math.toRadians(90))
-                .setTangent(Math.toRadians(90))
-                .lineToY(60)
+                .strafeToSplineHeading(new Vector2d(-36,60),Math.toRadians(90))
                 .endTrajectory();
         TrajectoryActionBuilder action1_6 = action1_5.fresh()
                 .strafeToSplineHeading(new Vector2d(2,33),Math.toRadians(-90))
                 .endTrajectory();
         TrajectoryActionBuilder action1_7 = action1_6.fresh()
-                .strafeTo(new Vector2d(-56,56));
+                .strafeTo(new Vector2d(-36,60));
 
         telemetry.addData("Runtime", runtime.seconds());
         telemetry.update();
@@ -297,6 +296,7 @@ public class Auto extends LinearOpMode {
         //run code
 
         if (autoSelector == AutoSelector.BASKET) {
+            // no delay and specimen start
             if((!delay) && (specimen)) {
                 Actions.runBlocking(
                         new SequentialAction(
@@ -353,7 +353,7 @@ public class Auto extends LinearOpMode {
                 );
             }
         } else if (autoSelector == AutoSelector.OBZ) {
-            if(!delay) {
+            if((!delay) && (specimen)) {
                 Actions.runBlocking(
                         new SequentialAction(
                                 submersibleOne,
@@ -366,7 +366,7 @@ public class Auto extends LinearOpMode {
                                 Obz
                         )
                 );
-            } else {
+            } if((delay) && (specimen)) {
                 Actions.runBlocking(
                         new SequentialAction(
                                 new SleepAction(ROBOT_DELAY_TIME),
@@ -377,6 +377,29 @@ public class Auto extends LinearOpMode {
                                 submersibleThree,
                                 grabObzThree,
                                 submersibleFour,
+                                Obz
+                        )
+                );
+            } if((delay) && (!specimen)) {
+                Actions.runBlocking(
+                        new SequentialAction(
+                                submersibleOne,
+                                pushAndGrabObz,
+                                submersibleTwo,
+                                grabObzTwo,
+                                submersibleThree,
+                                Obz
+                        )
+                );
+            } if((!delay) && (!specimen)) {
+                Actions.runBlocking(
+                        new SequentialAction(
+                                new SleepAction(ROBOT_DELAY_TIME),
+                                submersibleOne,
+                                pushAndGrabObz,
+                                submersibleTwo,
+                                grabObzTwo,
+                                submersibleThree,
                                 Obz
                         )
                 );
@@ -444,7 +467,6 @@ public class Auto extends LinearOpMode {
         // test stuff
 
         if (autoSelector == AutoSelector.TEST) {
-            //telemetry.setAutoClear(false);
             Actions.runBlocking(
                     new SequentialAction(
                             telemetryPacket -> {
