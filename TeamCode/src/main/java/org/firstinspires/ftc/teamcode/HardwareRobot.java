@@ -9,6 +9,7 @@ import static org.firstinspires.ftc.teamcode.DriveConstants.DOCK_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.DUNK_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.EXTENSION_SPEED;
 import static org.firstinspires.ftc.teamcode.DriveConstants.FULL_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.HORIZONTAL_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_SPEED;
 import static org.firstinspires.ftc.teamcode.DriveConstants.TRANSFER_POSITION;
@@ -40,12 +41,13 @@ public class HardwareRobot {
     final HardwareMap hardwareMap;
     MecanumDrive drive = null;
 
-    private DcMotor leftExtension = null;
-    private DcMotor rightExtension = null;
-    public DcMotor intake = null;
+    public DcMotor extension = null;
+    public DcMotor verticalExtension = null;
+    public Servo intakeClaw = null;
     public Servo intakeFlip = null;
+    public Servo intakeTurn = null;
     public Servo arm = null;
-    public Servo claw = null;
+    public Servo armClaw = null;
 
     // Define Motor and Servo objects  (Make them private so they can't be accessed externally)
     Pose2d startPose = new Pose2d(0,0,Math.toRadians(0));
@@ -61,42 +63,37 @@ public class HardwareRobot {
         this.telemetry = telemetry;
         drive = new MecanumDrive(hardwareMap,startPose);
         allHubs = hardwareMap.getAll(LynxModule.class);
-        leftExtension = hardwareMap.get(DcMotor.class,"leftExtension");    //CH Port _
-        rightExtension = hardwareMap.get(DcMotor.class,"rightExtension");
-        intake = hardwareMap.get(DcMotor.class,"intake");
+        extension = hardwareMap.get(DcMotor.class,"extension");    //CH Port
+        verticalExtension = hardwareMap.get(DcMotor.class,"verticalExtension");
+        intakeClaw = hardwareMap.get(Servo.class, "intakeClaw");
         intakeFlip = hardwareMap.get(Servo.class, "intakeFlip");
+        intakeTurn = hardwareMap.get(Servo.class, "intakeTurn");
         arm = hardwareMap.get(Servo.class,"arm");
-        claw = hardwareMap.get(Servo.class, "claw");
+        armClaw = hardwareMap.get(Servo.class, "armClaw");
 
         //set directions of all motors and servos
-        leftExtension.setDirection(DcMotor.Direction.FORWARD);
-        rightExtension.setDirection(DcMotor.Direction.REVERSE);
-        intake.setDirection(DcMotor.Direction.REVERSE);
+        extension.setDirection(DcMotor.Direction.FORWARD);
+        verticalExtension.setDirection(DcMotor.Direction.REVERSE);
         intakeFlip.setDirection(Servo.Direction.FORWARD);
+        intakeClaw.setDirection(Servo.Direction.REVERSE);
+        intakeTurn.setDirection(Servo.Direction.FORWARD);
         arm.setDirection(Servo.Direction.FORWARD);
-        claw.setDirection(Servo.Direction.REVERSE);
+        armClaw.setDirection(Servo.Direction.REVERSE);
 
         //set the initial position for all servos
         claw.setPosition(CLAW_CLOSED_POSITION);
         intakeFlip.setPosition(TRANSFER_POSITION);
-        arm.setPosition(DOCK_POSITION);
+        arm.setPosition(HORIZONTAL_POSITION);
 
         //Set motor behavior
-        leftExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        extension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        /*
-        leftExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftExtension.setTargetPosition(BASE_POSITION);
-        leftExtension.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftExtension.setPower(EXTENSION_SPEED);
 
-        rightExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightExtension.setTargetPosition(BASE_POSITION);
-        rightExtension.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightExtension.setPower(EXTENSION_SPEED);
+        extension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        extension.setTargetPosition(BASE_POSITION);
+        extension.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        extension.setPower(EXTENSION_SPEED);
 
-         */
 
 
 
@@ -114,13 +111,11 @@ public class HardwareRobot {
 
     //extension
     public void retract(){
-        leftExtension.setTargetPosition(BASE_POSITION);
-        rightExtension.setTargetPosition(BASE_POSITION);
+        extension.setTargetPosition(BASE_POSITION);
     }
 
     public void extension(){
-        leftExtension.setTargetPosition(FULL_POSITION);
-        rightExtension.setTargetPosition(FULL_POSITION);
+        extension.setTargetPosition(FULL_POSITION);
     }
 
     //claw

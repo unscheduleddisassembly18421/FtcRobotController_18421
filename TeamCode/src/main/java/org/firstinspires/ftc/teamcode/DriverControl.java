@@ -82,9 +82,9 @@ public class DriverControl extends OpMode
     public void loop() {
         TelemetryPacket packet = new TelemetryPacket();
 
-        double drive =  gamepad1.left_stick_y;
-        double turn  =  -gamepad1.left_stick_x;
-        double strafe = -gamepad1.right_stick_x;
+        double drive =  -gamepad1.left_stick_y;
+        double turn  =  gamepad1.right_stick_x;
+        double strafe = gamepad1.left_stick_x;
         boolean inSlowMode = gamepad1.right_bumper;
 
 
