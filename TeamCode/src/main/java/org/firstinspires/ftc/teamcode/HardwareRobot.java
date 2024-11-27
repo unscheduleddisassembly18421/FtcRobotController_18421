@@ -84,6 +84,7 @@ public class HardwareRobot {
         claw.setPosition(CLAW_CLOSED_POSITION);
         intakeFlip.setPosition(TRANSFER_POSITION);
         arm.setPosition(HORIZONTAL_POSITION);
+        //TEST THE CHANGE
 
         //Set motor behavior
         extension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
