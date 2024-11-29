@@ -1,11 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.DriveConstants.ALIGN_POSITION;
+
 import static org.firstinspires.ftc.teamcode.DriveConstants.BASE_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.CLAW_CLOSED_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.CLAW_OPEN_POSITION;
-import static org.firstinspires.ftc.teamcode.DriveConstants.DOCK_POSITION;
-import static org.firstinspires.ftc.teamcode.DriveConstants.DUNK_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.EXTENSION_SPEED;
 import static org.firstinspires.ftc.teamcode.DriveConstants.FULL_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_POSITION;
@@ -40,12 +38,14 @@ public class HardwareRobotAuto {
     final HardwareMap hardwareMap;
     MecanumDrive drive = null;
 
-    public DcMotor leftExtension = null;
-    public DcMotor rightExtension = null;
-    public DcMotor intake = null;
+    public DcMotor verticalExtension = null;
+    public DcMotor horizontalExtension = null;
     public Servo intakeFlip = null;
+    public Servo intakeTurn = null;
+    public Servo intake = null;
+    public Servo armClaw = null;
     public Servo arm = null;
-    public Servo claw = null;
+    public Servo intakeClaw = null;
 
     // Define Motor and Servo objects  (Make them private so they can't be accessed externally)
     Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
@@ -61,29 +61,22 @@ public class HardwareRobotAuto {
         this.telemetry = telemetry;
         drive = new MecanumDrive(hardwareMap, startPose);
         allHubs = hardwareMap.getAll(LynxModule.class);
-        leftExtension = hardwareMap.get(DcMotor.class, "leftExtension");    //CH Port _
-        rightExtension = hardwareMap.get(DcMotor.class, "rightExtension");
-        intake = hardwareMap.get(DcMotor.class, "intake");
-        intakeFlip = hardwareMap.get(Servo.class, "intakeFlip");
-        arm = hardwareMap.get(Servo.class, "arm");
-        claw = hardwareMap.get(Servo.class, "claw");
-
+        horizontalExtension = hardwareMap.get(DcMotor.class, "horizontalExtension");
+        verticalExtension = hardwareMap.get(DcMotor.class, "verticalExtension");
+        // add the config for servos when ready :))
         //set directions of all motors and servos
-        leftExtension.setDirection(DcMotor.Direction.FORWARD);
-        rightExtension.setDirection(DcMotor.Direction.REVERSE);
-        intake.setDirection(DcMotor.Direction.REVERSE);
+        horizontalExtension.setDirection(DcMotor.Direction.FORWARD);
+        verticalExtension.setDirection(DcMotor.Direction.FORWARD);
         intakeFlip.setDirection(Servo.Direction.FORWARD);
-        arm.setDirection(Servo.Direction.FORWARD);
-        claw.setDirection(Servo.Direction.REVERSE);
+        intakeClaw.setDirection(Servo.Direction.FORWARD);
+
 
         //set the initial position for all servos
-        claw.setPosition(CLAW_CLOSED_POSITION);
-        intakeFlip.setPosition(TRANSFER_POSITION);
-        arm.setPosition(DUNK_POSITION);
+
+
 
         //Set motor behavior
-        leftExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         /*
         leftExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -96,8 +89,6 @@ public class HardwareRobotAuto {
         rightExtension.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightExtension.setPower(EXTENSION_SPEED);
         */
-        leftExtension.setPower(0);
-        rightExtension.setPower(0);
 
         //a specific piece of code used for "bulk reads".  Read gm0 for more info on Bulk Reads.
         for (LynxModule hub : allHubs) {
@@ -111,91 +102,22 @@ public class HardwareRobotAuto {
 
     }
 
-    public class ClawClose implements Action {
+    public class IntakeClawClose implements Action {
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            claw.setPosition(CLAW_CLOSED_POSITION);
+            intakeClaw.setPosition(CLAW_CLOSED_POSITION);
+            return false;
+        }
+    }
+    public class intakeClawOpen implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            intakeClaw.setPosition(CLAW_OPEN_POSITION);
             return false;
         }
     }
 
-    public Action clawClose() {
-        return new ClawClose();
-    }
 
-    public class ClawOpen implements Action {
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            claw.setPosition(CLAW_OPEN_POSITION);
-            return false;
-        }
-    }
-
-    public Action clawOpen() {
-        return new ClawOpen();
-    }
-
-
-    public class ArmExtended implements Action {
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            arm.setPosition(ALIGN_POSITION);
-
-            return false;
-        }
-    }
-
-    public Action armExtended() {
-        return new ArmExtended();
-    }
-
-    public class ArmDocked implements Action{
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            arm.setPosition(DOCK_POSITION);
-            return false;
-        }
-    }
-
-    public Action armDocked(){
-        return new ArmDocked();
-    }
-
-    public class ArmDunked implements Action{
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            arm.setPosition(DUNK_POSITION);
-            return false;
-        }
-    }
-
-    public Action armDunked(){
-        return new ArmDunked();
-    }
-
-    public class RotateArm implements Action {
-
-        double pos;
-
-        public RotateArm(double pos) {
-            this.pos = pos;
-
-        }
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            arm.setPosition(pos);
-            return false;
-        }
-    }
-
-    public Action rotateArm(double pos) {
-
-        return new InstantAction(() -> arm.setPosition(pos));
-    }
 }

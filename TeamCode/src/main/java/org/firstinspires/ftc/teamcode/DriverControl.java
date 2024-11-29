@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode;
 
 //import com.acmerobotics.dashboard.FtcDashboard;
 //import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import static org.firstinspires.ftc.teamcode.DriveConstants.DOCK_POSITION;
-import static org.firstinspires.ftc.teamcode.DriveConstants.DUNK_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.VERTICAL_POSITION;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -171,10 +169,10 @@ public class DriverControl extends OpMode
             robot.arm.setPosition(VERTICAL_POSITION);
         }
         else if(gamepad1.dpad_down){
-            robot.arm.setPosition(DUNK_POSITION);
+          //  robot.arm.setPosition(DUNK_POSITION);
         }
         else if(gamepad1.dpad_right || gamepad1.dpad_left){
-            robot.arm.setPosition(DOCK_POSITION);
+          //  robot.arm.setPosition(DOCK_POSITION);
         }
 
 //        xCurrent = gamepad1.x;
@@ -213,10 +211,11 @@ public class DriverControl extends OpMode
         packet.fieldOverlay().setStroke("#3F51B5");
         Drawing.drawRobot(packet.fieldOverlay(), robot.drive.pose);
         FtcDashboard.getInstance().sendTelemetryPacket(packet);
-        telemetry.addData("claw position", robot.claw.getPosition());
+       // telemetry.addData("claw position", robot.claw.getPosition());
         telemetry.addData("intake flip position", robot.intakeFlip.getPosition());
         //telemetry.addData("arm position", robot.arm.getPosition());
         // something i came up with
+        /*
         if(robot.arm.getPosition() == VERTICAL_POSITION) {
             telemetry.addLine("vertical position");
         } else if(robot.arm.getPosition() == DUNK_POSITION) {
@@ -224,6 +223,7 @@ public class DriverControl extends OpMode
         } else if(robot.arm.getPosition() == DOCK_POSITION) {
             telemetry.addLine("grab position");
         }
+        */
         telemetry.addData("armToggle", armToggle);
         telemetry.update();
 

@@ -29,6 +29,10 @@ public class DriveConstants {
     public static double HORIZONTAL_POSITION = 0.07; // grab
     public static double VERTICAL_POSITION = 0.4;
 
+    public static double START_POSITION = 0;
+    public static double ARM_TRANSFER_POSITION = 0.5;
+    public static double GRAB_AND_SCORE_POSITION = 1;
+
 
 
 
