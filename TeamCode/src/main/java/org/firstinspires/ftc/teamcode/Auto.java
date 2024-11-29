@@ -1,9 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.DriveConstants.DOCK_POSITION;
-import static org.firstinspires.ftc.teamcode.DriveConstants.DUNK_POSITION;
-import static org.firstinspires.ftc.teamcode.DriveConstants.VERTICAL_POSITION;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -468,72 +464,20 @@ public class Auto extends LinearOpMode {
         if (autoSelector == AutoSelector.TEST) {
             Actions.runBlocking(
                     new SequentialAction(
-                            telemetryPacket -> {
-                                telemetry.addData("servo position", r.claw.getPosition());
-                                telemetry.update();
-                                return false;
-                            },
-                            r.clawOpen(),
-                            telemetryPacket -> {
-                                telemetry.addData("servo position", r.claw.getPosition());
-                                telemetry.update();
-                                return false;
-                            },
-                            new SleepAction(2),
-                            r.clawClose(),
-                            telemetryPacket -> {
-                                telemetry.addData("servo position", r.claw.getPosition());
-                                telemetry.update();
-                                return false;
-                            },
-                            new SleepAction(2)
+
                     )
             );
         } else if (autoSelector == AutoSelector.TEST2) {
             Actions.runBlocking(
                     new SequentialAction(
-                            r.rotateArm(DOCK_POSITION),
-                            telemetryPacket -> {
-                                telemetry.addData("dock position",r.arm.getPosition());
-                                telemetry.update();
-                                return false;
-                            },
-                            new SleepAction(ARM_ROTATE_DELAY_TIME),
-                            r.rotateArm(VERTICAL_POSITION),
-                            telemetryPacket -> {
-                                telemetry.addData("vertical position", r.arm.getPosition());
-                                telemetry.update();
-                                return false;  
-                            },
-                            new SleepAction(ARM_ROTATE_DELAY_TIME),
-                            r.rotateArm(DUNK_POSITION),
-                            telemetryPacket -> {
-                                telemetry.addData("dunk position", r.arm.getPosition());
-                                telemetry.update();
-                                return false;
-                            },
-                            new SleepAction(ARM_ROTATE_DELAY_TIME),
-                            r.clawOpen(),
-                            telemetryPacket -> {
-                                telemetry.addData("claw open",r.claw.getPosition());
-                                telemetry.addLine("sequence complete");
-                                telemetry.update();
-                                return false;
-                            },
-                            new SleepAction(CLAW_ROTATE_DELAY_TIME)
+
                     )
             );
 
         } else if (autoSelector == AutoSelector.TEST3) {
             Actions.runBlocking(
                     new SequentialAction(
-                            r.rotateArm(VERTICAL_POSITION),
-                            r.rotateArm(DUNK_POSITION),
-                            new SleepAction(2),
-                            r.clawOpen(),
-                            new SleepAction(3),
-                            r.rotateArm(DOCK_POSITION),
-                            new SleepAction(3)
+
                     )
             );
         }
