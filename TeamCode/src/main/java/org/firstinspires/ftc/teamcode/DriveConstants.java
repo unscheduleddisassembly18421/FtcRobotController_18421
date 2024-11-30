@@ -21,9 +21,9 @@ public class DriveConstants {
     public static double TURN_POSITION = 0.25;
 
     //extension
-    public static int BASE_POSITION = 0;
-
-    public static double EXTENSION_SPEED = 1;
+    public static double HORIZONTAL_EXTENSION_SPEED = 1;
+    public static int EXTENSION_POSITION = 0;
+    public static double VERTICAL_EXTENSION_SPEED = 1;
 
     //arm
     public static double HORIZONTAL_POSITION = 0.07; // grab

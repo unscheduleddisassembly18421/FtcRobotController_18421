@@ -3,12 +3,15 @@ package org.firstinspires.ftc.teamcode;
 
 //import com.acmerobotics.dashboard.FtcDashboard;
 //import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import static org.firstinspires.ftc.teamcode.DriveConstants.EXTENSION_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.HIGH_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.HORIZONTAL_EXTENSION_SPEED;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_CLAW_CLOSE;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_CLAW_OPEN;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.LOW_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.TRANSFER_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.VERTICAL_EXTENSION_SPEED;
 import static org.firstinspires.ftc.teamcode.DriveConstants.VERTICAL_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.target;
 
@@ -133,7 +136,8 @@ public class DriverControl extends OpMode
             case HORIZONTAL:
                 //extension
                 //TODO Fix this, see the SimpleExample for the StateMachine Run_To_Position Example
-                robot.extension.setTargetPosition((int) (gamepad1.right_trigger - gamepad1.left_trigger));
+                EXTENSION_POSITION = EXTENSION_POSITION + (int) (gamepad1.right_trigger*VERTICAL_EXTENSION_SPEED) - (int)(gamepad1.left_trigger*VERTICAL_EXTENSION_SPEED);
+                robot.extension.setTargetPosition(EXTENSION_POSITION);
 
                 //intake claw
                 aCurrent = gamepad1.a;
@@ -185,7 +189,8 @@ public class DriverControl extends OpMode
             case VERTICAL:
                 //extension
                 //TODO - fix this (need to look at how I did it in the example)
-                robot.verticalExtension.setTargetPosition((int) (gamepad1.right_trigger - gamepad1.left_trigger));
+                EXTENSION_POSITION = EXTENSION_POSITION + (int) (gamepad1.right_trigger*VERTICAL_EXTENSION_SPEED) - (int)(gamepad1.left_trigger*VERTICAL_EXTENSION_SPEED);
+                robot.verticalExtension.setTargetPosition(EXTENSION_POSITION);
 
                 //arm claw
                 aVerticalCurrent = gamepad1.a;
@@ -232,7 +237,19 @@ public class DriverControl extends OpMode
                 break;
 
             case TRANSFER:
-                //transfer stuff
+                //bring the horizontal extension and the vertical extension into transfer position
+
+                //move the arm into transfer position with claw open
+
+                //move the intake into intake transfer position
+
+                //close the arm claw
+
+                //open the intake claw
+
+                //move the intake out of the way
+
+                //move the arm into horizontal position
                 break;
         }
 
