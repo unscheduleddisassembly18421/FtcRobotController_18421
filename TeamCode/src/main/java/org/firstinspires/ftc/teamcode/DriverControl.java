@@ -3,17 +3,25 @@ package org.firstinspires.ftc.teamcode;
 
 //import com.acmerobotics.dashboard.FtcDashboard;
 //import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import static org.firstinspires.ftc.teamcode.DriveConstants.EXTENSION_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.ARM_MOVE_DELAY;
+import static org.firstinspires.ftc.teamcode.DriveConstants.ARM_TRANSFER_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.CLAW_CLOSED_POSITION;
+
+import static org.firstinspires.ftc.teamcode.DriveConstants.EXTENSION_RECTRACT_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.HIGH_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.HORIZONTAL_EXTENSION_SPEED;
+import static org.firstinspires.ftc.teamcode.DriveConstants.HORIZONTAL_WIGGLE_ROOM;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_CLAW_CLOSE;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_CLAW_OPEN;
+import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_FLIP_DELAY;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.LOW_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.TRANSFER_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.VERTICAL_EXTENSION_SPEED;
+import static org.firstinspires.ftc.teamcode.DriveConstants.VERTICAL_EXTENSION_SPEED_MULTIPLIER;
 import static org.firstinspires.ftc.teamcode.DriveConstants.VERTICAL_POSITION;
-import static org.firstinspires.ftc.teamcode.DriveConstants.target;
+import static org.firstinspires.ftc.teamcode.DriveConstants.VERTICAL_WIGGLE_ROOM;
+
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -44,6 +52,7 @@ import org.firstinspires.ftc.teamcode.SimpleExamples.TwoWheelDriveHardware;
 public class DriverControl extends OpMode
 {
     private static final double TOGGLE_DELAY = 250;
+    ElapsedTime transferClock = new ElapsedTime();
     ElapsedTime clock = new ElapsedTime();
     HardwareRobot robot;//new TwoWheelDriveHardware(telemetry, hardwareMap);
     boolean aCurrent = false;
@@ -67,12 +76,15 @@ public class DriverControl extends OpMode
     boolean modeToggle = false;
     boolean modeLast = false;
 
+    int verticalTarget = LOW_POSITION;
+    int horizontalTarget = EXTENSION_RECTRACT_POSITION;
 
 
-    public enum Mode {HORIZONTAL, VERTICAL}
+
+    public enum Mode {HORIZONTAL, VERTICAL, TRANSFER}
     Mode mode;
 
-    public enum Transfer {LOW, HIGH, FLOAT, TRANSFER}
+    public enum Transfer {LOW, HIGH, FLOAT, TRANSFER_RETRACT,TRANSFER_ARM_MOVE}
     Transfer transfer;
 
     @Override
@@ -89,6 +101,9 @@ public class DriverControl extends OpMode
 
     @Override
     public void start() {
+        robot.verticalExtension.setTargetPosition(horizontalTarget);
+        robot.extension.setTargetPosition(verticalTarget);
+        transferClock.reset();
         clock.reset();
     }
 
@@ -124,7 +139,7 @@ public class DriverControl extends OpMode
         }
         modeLast = modeCurrent;
 
-        //arm
+        //arm //TODO should this still be here?
         if (gamepad1.dpad_right || gamepad1.dpad_left){
             robot.horizontal();
         }
@@ -132,12 +147,18 @@ public class DriverControl extends OpMode
             robot.vertical();
         }
 
+        if (transfer != Transfer.LOW || transfer != Transfer.HIGH || transfer != Transfer.FLOAT){
+            //auto switch gamepad mode to "Transfer" so it doesn't interfere
+            mode = Mode.TRANSFER;
+        }
+
         switch (mode){
             case HORIZONTAL:
                 //extension
-                //TODO Fix this, see the SimpleExample for the StateMachine Run_To_Position Example
-                EXTENSION_POSITION = EXTENSION_POSITION + (int) (gamepad1.right_trigger*VERTICAL_EXTENSION_SPEED) - (int)(gamepad1.left_trigger*VERTICAL_EXTENSION_SPEED);
-                robot.extension.setTargetPosition(EXTENSION_POSITION);
+                //TODO FIXED so that you change the target in the state machine and update the setTarget outside.
+                horizontalTarget = horizontalTarget + (int) (gamepad1.right_trigger*VERTICAL_EXTENSION_SPEED_MULTIPLIER)
+                                                    - (int)(gamepad1.left_trigger*VERTICAL_EXTENSION_SPEED_MULTIPLIER);
+                //robot.extension.setTargetPosition(EXTENSION_POSITION); TODO REMOVE
 
                 //intake claw
                 aCurrent = gamepad1.a;
@@ -188,9 +209,8 @@ public class DriverControl extends OpMode
 
             case VERTICAL:
                 //extension
-                //TODO - fix this (need to look at how I did it in the example)
-                EXTENSION_POSITION = EXTENSION_POSITION + (int) (gamepad1.right_trigger*VERTICAL_EXTENSION_SPEED) - (int)(gamepad1.left_trigger*VERTICAL_EXTENSION_SPEED);
-                robot.verticalExtension.setTargetPosition(EXTENSION_POSITION);
+                verticalTarget = verticalTarget + (int) (gamepad1.right_trigger*VERTICAL_EXTENSION_SPEED_MULTIPLIER)
+                                                - (int)(gamepad1.left_trigger*VERTICAL_EXTENSION_SPEED);
 
                 //arm claw
                 aVerticalCurrent = gamepad1.a;
@@ -207,39 +227,54 @@ public class DriverControl extends OpMode
                 }
                 aVerticalLast = aVerticalCurrent;
                 break;
+            case TRANSFER:
+                //dummy case so that we don't get conflicts between state machines.
+                break;
         }
 
         switch (transfer){
             case LOW:
-                if (target != LOW_POSITION) {target = LOW_POSITION;}
+                if (verticalTarget != LOW_POSITION) {verticalTarget = LOW_POSITION;}
                 if (gamepad1.y){
-                    transfer = Transfer.TRANSFER;
+                    transfer = Transfer.TRANSFER_RETRACT;
                 }
                 break;
 
             case HIGH:
-                if (target != HIGH_POSITION){target = HIGH_POSITION;}
+                if (verticalTarget != HIGH_POSITION){verticalTarget = HIGH_POSITION;}
                 if (gamepad1.y){
-                    transfer = Transfer.TRANSFER;
+                    transfer = Transfer.TRANSFER_RETRACT;
                 }
                 break;
 
             case  FLOAT:
-                if (target < LOW_POSITION){//Some checks to make sure we don't try to float our way passed the limits of the lift.
-                    target = LOW_POSITION;
+                if (verticalTarget < LOW_POSITION){//Some checks to make sure we don't try to float our way passed the limits of the lift.
+                    verticalTarget = LOW_POSITION;
                 }
-                else if (target > HIGH_POSITION){
-                    target = HIGH_POSITION;
+                else if (verticalTarget > HIGH_POSITION){
+                    verticalTarget = HIGH_POSITION;
                 }
                 if (gamepad1.y){
-                    transfer = Transfer.TRANSFER;
+                    transfer = Transfer.TRANSFER_RETRACT;
+                    //ADD CLOCK RESET HERE
+                    clock.reset();
                 }
                 break;
 
-            case TRANSFER:
+            case TRANSFER_RETRACT:
                 //bring the horizontal extension and the vertical extension into transfer position
-
-                //move the arm into transfer position with claw open
+                //TODO - will this cause a conflict if they arrive simultaneously?
+                verticalTarget = LOW_POSITION;
+                horizontalTarget = EXTENSION_RECTRACT_POSITION; //no need to set these, as it is done outside switch
+                if (Math.abs(verticalTarget-robot.verticalExtension.getCurrentPosition())<VERTICAL_WIGGLE_ROOM &&
+                    Math.abs(horizontalTarget-robot.extension.getCurrentPosition())<HORIZONTAL_WIGGLE_ROOM){
+                    //this will wait for the extensions to move.
+                    robot.open_claw();
+                    robot.arm.setPosition(ARM_TRANSFER_POSITION);
+                    transferClock.reset();
+                    transfer = Transfer.TRANSFER_ARM_MOVE;
+                    //bring moving the arm to transfer position with claw open
+                }
 
                 //move the intake into intake transfer position
 
@@ -251,7 +286,20 @@ public class DriverControl extends OpMode
 
                 //move the arm into horizontal position
                 break;
+            case TRANSFER_ARM_MOVE:
+                if (transferClock.milliseconds()>ARM_MOVE_DELAY){
+                    robot.intakeFlip.setPosition(INTAKE_POSITION); //TODO is this the right position?
+                    //move intake to "transfer" position?
+                }
+                if (transferClock.milliseconds()>ARM_MOVE_DELAY+INTAKE_FLIP_DELAY){
+                    //I am adding these delays so that they happen in order.  Might be annoying to tune the times.
+                    robot.armClaw.setPosition(CLAW_CLOSED_POSITION);
+                    //close arm claw
+                }
+
+                break;
         }
+
 
 
 
@@ -279,6 +327,8 @@ public class DriverControl extends OpMode
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + clock.toString());
         //telemetry.addData("Motors", "left (%.2f), right (%.2f)", robot.getLeftPower(), robot.getRightPower());
+        robot.extension.setTargetPosition(horizontalTarget);
+        robot.verticalExtension.setTargetPosition(verticalTarget);
     }
 
     @Override

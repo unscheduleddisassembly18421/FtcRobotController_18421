@@ -1,16 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.DriveConstants.BASE_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.CLAW_CLOSED_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.CLAW_OPEN_POSITION;
-import static org.firstinspires.ftc.teamcode.DriveConstants.EXTENSION_SPEED;
+import static org.firstinspires.ftc.teamcode.DriveConstants.EXTENSION_RECTRACT_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.HORIZONTAL_EXTENSION_SPEED;
 import static org.firstinspires.ftc.teamcode.DriveConstants.HORIZONTAL_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_CLAW_CLOSE;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_CLAW_OPEN;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.LOW_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.NORMAL_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.TRANSFER_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.TURN_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.VERTICAL_EXTENSION_SPEED;
 import static org.firstinspires.ftc.teamcode.DriveConstants.VERTICAL_POSITION;
 import static org.firstinspires.ftc.teamcode.SimpleExamples.TwoWheelDriveConstants.MAX_SPEED;
 import static org.firstinspires.ftc.teamcode.SimpleExamples.TwoWheelDriveConstants.SLOW_MODE_SPEED;
@@ -83,18 +85,23 @@ public class HardwareRobot {
         armClaw.setPosition(CLAW_CLOSED_POSITION);
         intakeFlip.setPosition(TRANSFER_POSITION);
         arm.setPosition(HORIZONTAL_POSITION);
-        //TEST THE CHANGE
+
 
         //Set motor behavior
         extension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
         extension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        extension.setTargetPosition(BASE_POSITION);
+        extension.setTargetPosition(EXTENSION_RECTRACT_POSITION);
         extension.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        extension.setPower(EXTENSION_SPEED);
+        extension.setPower(HORIZONTAL_EXTENSION_SPEED);
 
-
+        //TODO NEED Vertical Extension version here.
+        verticalExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //etc.
+        verticalExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        verticalExtension.setTargetPosition(LOW_POSITION);
+        verticalExtension.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        verticalExtension.setPower(VERTICAL_EXTENSION_SPEED);
 
 
         //a specific piece of code used for "bulk reads".  Read gm0 for more info on Bulk Reads.
