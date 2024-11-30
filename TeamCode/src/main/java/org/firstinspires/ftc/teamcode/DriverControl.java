@@ -132,6 +132,7 @@ public class DriverControl extends OpMode
         switch (mode){
             case HORIZONTAL:
                 //extension
+                //TODO Fix this, see the SimpleExample for the StateMachine Run_To_Position Example
                 robot.extension.setTargetPosition((int) (gamepad1.right_trigger - gamepad1.left_trigger));
 
                 //intake claw
@@ -183,6 +184,7 @@ public class DriverControl extends OpMode
 
             case VERTICAL:
                 //extension
+                //TODO - fix this (need to look at how I did it in the example)
                 robot.verticalExtension.setTargetPosition((int) (gamepad1.right_trigger - gamepad1.left_trigger));
 
                 //arm claw
