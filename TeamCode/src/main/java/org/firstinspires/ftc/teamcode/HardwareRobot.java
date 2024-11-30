@@ -59,6 +59,7 @@ public class HardwareRobot {
     public HardwareRobot(Telemetry telemetry, HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
+
         /*drive = new MecanumDrive(hardwareMap,startPose);
         allHubs = hardwareMap.getAll(LynxModule.class);
         extension = hardwareMap.get(DcMotor.class,"extension");    //CH Port
