@@ -4,11 +4,13 @@ import static org.firstinspires.ftc.teamcode.DriveConstants.BASE_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.CLAW_CLOSED_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.CLAW_OPEN_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.EXTENSION_SPEED;
-import static org.firstinspires.ftc.teamcode.DriveConstants.FULL_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.HORIZONTAL_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_CLAW_CLOSE;
+import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_CLAW_OPEN;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_POSITION;
-import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_SPEED;
+import static org.firstinspires.ftc.teamcode.DriveConstants.NORMAL_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.TRANSFER_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.TURN_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.VERTICAL_POSITION;
 import static org.firstinspires.ftc.teamcode.SimpleExamples.TwoWheelDriveConstants.MAX_SPEED;
 import static org.firstinspires.ftc.teamcode.SimpleExamples.TwoWheelDriveConstants.SLOW_MODE_SPEED;
@@ -57,17 +59,16 @@ public class HardwareRobot {
     public HardwareRobot(Telemetry telemetry, HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
-        drive = new MecanumDrive(hardwareMap,startPose);
+        /*drive = new MecanumDrive(hardwareMap,startPose);
         allHubs = hardwareMap.getAll(LynxModule.class);
-        /*
         extension = hardwareMap.get(DcMotor.class,"extension");    //CH Port
         verticalExtension = hardwareMap.get(DcMotor.class,"verticalExtension");
         intakeClaw = hardwareMap.get(Servo.class, "intakeClaw");
         intakeFlip = hardwareMap.get(Servo.class, "intakeFlip");
         intakeTurn = hardwareMap.get(Servo.class, "intakeTurn");
         arm = hardwareMap.get(Servo.class,"arm");
-        armClaw = hardwareMap.get(Servo.class, "armClaw");
-*/
+        armClaw = hardwareMap.get(Servo.class, "armClaw");*/
+
         //set directions of all motors and servos
         extension.setDirection(DcMotor.Direction.FORWARD);
         verticalExtension.setDirection(DcMotor.Direction.REVERSE);
@@ -107,16 +108,7 @@ public class HardwareRobot {
 
     }
 
-    //extension
-    public void retract(){
-        extension.setTargetPosition(BASE_POSITION);
-    }
-
-    public void extension(){
-        extension.setTargetPosition(FULL_POSITION);
-    }
-
-    //claw
+    //arm claw
     public void close_claw(){
         armClaw.setPosition(CLAW_CLOSED_POSITION);
     }
@@ -125,26 +117,24 @@ public class HardwareRobot {
         armClaw.setPosition(CLAW_OPEN_POSITION);
     }
 
+    //intake claw
+    public void intake_open(){
+        intakeClaw.setPosition(INTAKE_CLAW_OPEN);
+    }
+
+    public void intake_close(){
+        intakeClaw.setPosition(INTAKE_CLAW_CLOSE);
+    }
+
+
     //arm
-    //TODO sorry about commenting this much i just dont know what to do
-
-    public void dock(){
-    //    arm.setPosition(DOCK_POSITION);
-    }
-
     public void vertical(){
-    //    arm.setPosition(VERTICAL_POSITION);
+        arm.setPosition(VERTICAL_POSITION);
     }
 
-    public void align(){
-    //    arm.setPosition(ALIGN_POSITION);
+    public void horizontal(){
+        arm.setPosition(HORIZONTAL_POSITION);
     }
-
-    public void dunk() {
-    //    arm.setPosition(DUNK_POSITION);
-    }
-
-
 
     //intake flip
     public void transfer(){
@@ -155,26 +145,13 @@ public class HardwareRobot {
         intakeFlip.setPosition(INTAKE_POSITION);
     }
 
-    public void reverseIntake(){
-       // intake.setDirection(DcMotor.Direction.FORWARD);
-    }
-    public void forwardIntake(){
-       // intake.setDirection(DcMotor.Direction.REVERSE);
+    //intake turn
+    public void normal(){
+        intakeTurn.setPosition(NORMAL_POSITION);
     }
 
-    //intake
-    public void nomnom(){
-       // intake.setPower(INTAKE_SPEED);
+    public void turned(){
+        intakeTurn.setPosition(TURN_POSITION);
     }
-
-    public void nomnomStop(){
-     //   intake.setPower(0);
-    }
-
-    public void extend(double power){
-       // leftExtension.setPower(power);
-       // rightExtension.setPower(power);
-    }
-
 
 }

@@ -3,7 +3,14 @@ package org.firstinspires.ftc.teamcode;
 
 //import com.acmerobotics.dashboard.FtcDashboard;
 //import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import static org.firstinspires.ftc.teamcode.DriveConstants.HIGH_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_CLAW_CLOSE;
+import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_CLAW_OPEN;
+import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.LOW_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.TRANSFER_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.VERTICAL_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.target;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -17,6 +24,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.RoadRunner.Drawing;
+import org.firstinspires.ftc.teamcode.SimpleExamples.LiftStateMachine;
 import org.firstinspires.ftc.teamcode.SimpleExamples.TwoWheelDriveHardware;
 
 //The thing to notice in this OpMode is how short it is.  Most of the logic is happening in the hardware class that is stored
@@ -43,21 +51,26 @@ public class DriverControl extends OpMode
     boolean bToggle = false;
     boolean bLast = false;
 
-    boolean flipCurrent = false;
-    boolean flipToggle = false;
-    boolean flipLast = false;
-
-    boolean intakeCurrent = false;
-    boolean intakeToggle = false;
-    boolean intakeLast = false;
-
-
-
-    int armToggle = 0;  // the current "position" of the arm
     boolean xCurrent = false;
+    boolean xToggle = false;
     boolean xLast = false;
 
 
+    boolean aVerticalCurrent = false;
+    boolean aVerticalToggle = true;
+    boolean aVerticalLast = false;
+
+    boolean modeCurrent = false;
+    boolean modeToggle = false;
+    boolean modeLast = false;
+
+
+
+    public enum Mode {HORIZONTAL, VERTICAL}
+    Mode mode;
+
+    public enum Transfer {LOW, HIGH, FLOAT, TRANSFER}
+    Transfer transfer;
 
     @Override
     public void init() {
@@ -83,127 +96,144 @@ public class DriverControl extends OpMode
         double drive =  -gamepad1.left_stick_y;
         double turn  =  gamepad1.right_stick_x;
         double strafe = gamepad1.left_stick_x;
-        boolean inSlowMode = gamepad1.right_bumper;
 
 
 
         robot.drive.setDrivePowers(new PoseVelocity2d(
                 new Vector2d(
-                       drive,
+                        drive,
                         -turn
                 ),
                 strafe
         ));
-        //intake swivel toggle
-        flipCurrent = gamepad1.right_bumper;
+        //switch mode
+        modeCurrent = gamepad1.right_bumper;
 
-        if(flipCurrent && !flipLast && clock.milliseconds() > TOGGLE_DELAY){
-            flipToggle = !flipToggle;
+        if(modeCurrent && !modeLast && clock.milliseconds() > TOGGLE_DELAY){
+            modeToggle = !modeToggle;
             clock.reset();
         }
-        if(flipToggle){
-            robot.intake();
+        if(modeToggle){
+            mode = Mode.VERTICAL;
         }
         else{
-            robot.transfer();
+            mode = Mode.HORIZONTAL;
         }
-        flipLast = flipCurrent;
+        modeLast = modeCurrent;
 
-        // intake
-        intakeCurrent = gamepad1.left_bumper;
-        if(intakeCurrent && !intakeLast && clock.milliseconds() > TOGGLE_DELAY){
-            intakeToggle = !intakeToggle;
-            clock.reset();
+        //arm
+        if (gamepad1.dpad_right || gamepad1.dpad_left){
+            robot.horizontal();
         }
-        if(intakeToggle){
-            robot.nomnom();
-        }
-        else{
-            robot.nomnomStop();
+        else if(gamepad1.dpad_up){
+            robot.vertical();
         }
 
-        if(gamepad1.y){
-            robot.reverseIntake();
-        }
-        else{
-            robot.forwardIntake();
-        }
-        //other button to reverse direction
+        switch (mode){
+            case HORIZONTAL:
+                //extension
+                robot.extension.setTargetPosition((int) (gamepad1.right_trigger - gamepad1.left_trigger));
 
-        //claw toggle to close and open
-        aCurrent = gamepad1.a;
+                //intake claw
+                aCurrent = gamepad1.a;
 
-        if(aCurrent && !aLast && clock.milliseconds() > TOGGLE_DELAY){
-            aToggle = !aToggle;
-            clock.reset();
-        }
-        if(aToggle){
-            robot.close_claw();
-        }
-        else{
-            robot.open_claw();
-        }
-         aLast = aCurrent;
+                if(aCurrent && !aLast && clock.milliseconds() > TOGGLE_DELAY){
+                    aToggle = !aToggle;
+                    clock.reset();
+                }
+                if(aToggle){
+                    robot.intake_close();
+                }
+                else{
+                    robot.intake_open();
+                }
+                aLast = aCurrent;
 
-        //extension toggle
-//        bCurrent = gamepad1.b;
-//
-//        if(bCurrent && !bLast && clock.milliseconds() > TOGGLE_DELAY){
-//            bToggle = !bToggle;
-//            clock.reset();
-//        }
-//        if(bToggle){
-//            robot.extension();
-//        }
-//        else{
-//            robot.retract();
-//        }
-//        bLast = bCurrent;
+                //intake flip
+                xCurrent = gamepad1.x;
 
-        robot.extend(gamepad1.right_trigger-gamepad1.left_trigger);
-        // cool
+                if(xCurrent && !xLast && clock.milliseconds() > TOGGLE_DELAY){
+                    xToggle = !xToggle;
+                    clock.reset();
+                }
+                if(xToggle){
+                    robot.intake();
+                }
+                else{
+                    robot.transfer();
+                }
+                xLast = xCurrent;
 
-        //arm has to rotate to (docked, staging position for placement, first rung position,
-        //TODO Should we move to DPAD so we can move these in any order?
-        if(gamepad1.dpad_up){
-            robot.arm.setPosition(VERTICAL_POSITION);
-        }
-        else if(gamepad1.dpad_down){
-          //  robot.arm.setPosition(DUNK_POSITION);
-        }
-        else if(gamepad1.dpad_right || gamepad1.dpad_left){
-          //  robot.arm.setPosition(DOCK_POSITION);
+                //intake turn
+                bCurrent = gamepad1.b;
+
+                if(bCurrent && !bLast && clock.milliseconds() > TOGGLE_DELAY){
+                    bToggle = !bToggle;
+                    clock.reset();
+                }
+                if(bToggle){
+                    robot.turned();
+                }
+                else{
+                    robot.normal();
+                }
+                bLast = bCurrent;
+
+                break;
+
+            case VERTICAL:
+                //extension
+                robot.verticalExtension.setTargetPosition((int) (gamepad1.right_trigger - gamepad1.left_trigger));
+
+                //arm claw
+                aVerticalCurrent = gamepad1.a;
+
+                if(aVerticalCurrent && !aVerticalLast && clock.milliseconds() > TOGGLE_DELAY){
+                    aVerticalToggle = !aVerticalToggle;
+                    clock.reset();
+                }
+                if(aVerticalToggle){
+                    robot.close_claw();
+                }
+                else{
+                    robot.open_claw();
+                }
+                aVerticalLast = aVerticalCurrent;
+                break;
         }
 
-//        xCurrent = gamepad1.x;
-//        if(xCurrent && !xLast){
-//            clock.reset();
-//            if (armToggle == 0){
-//                armToggle = 1;
-//            }
-//            else if (armToggle == 1){
-//                armToggle = 2;
-//            }
-//            else if (armToggle == 2){
-//                armToggle = 3;
-//            }
-//            else if (armToggle == 3){
-//                armToggle = 0;
-//            }
-//        }
-//        if (armToggle == 1){
-//            robot.vertical();
-//        }
-//        else if (armToggle == 2){
-//            robot.align();
-//        }
-//        else if (armToggle == 3){
-//            robot.dunk();
-//        }
-//        else {
-//            robot.dock();
-//        }
-//        xLast = xCurrent;
+        switch (transfer){
+            case LOW:
+                if (target != LOW_POSITION) {target = LOW_POSITION;}
+                if (gamepad1.y){
+                    transfer = Transfer.TRANSFER;
+                }
+                break;
+
+            case HIGH:
+                if (target != HIGH_POSITION){target = HIGH_POSITION;}
+                if (gamepad1.y){
+                    transfer = Transfer.TRANSFER;
+                }
+                break;
+
+            case  FLOAT:
+                if (target < LOW_POSITION){//Some checks to make sure we don't try to float our way passed the limits of the lift.
+                    target = LOW_POSITION;
+                }
+                else if (target > HIGH_POSITION){
+                    target = HIGH_POSITION;
+                }
+                if (gamepad1.y){
+                    transfer = Transfer.TRANSFER;
+                }
+                break;
+
+            case TRANSFER:
+
+                break;
+        }
+
 
 
         robot.drive.updatePoseEstimate();
@@ -211,7 +241,7 @@ public class DriverControl extends OpMode
         packet.fieldOverlay().setStroke("#3F51B5");
         Drawing.drawRobot(packet.fieldOverlay(), robot.drive.pose);
         FtcDashboard.getInstance().sendTelemetryPacket(packet);
-       // telemetry.addData("claw position", robot.claw.getPosition());
+        // telemetry.addData("claw position", robot.claw.getPosition());
         telemetry.addData("intake flip position", robot.intakeFlip.getPosition());
         //telemetry.addData("arm position", robot.arm.getPosition());
         // something i came up with
@@ -224,7 +254,7 @@ public class DriverControl extends OpMode
             telemetry.addLine("grab position");
         }
         */
-        telemetry.addData("armToggle", armToggle);
+        //telemetry.addData("armToggle", armToggle);
         telemetry.update();
 
         // Show the elapsed game time and wheel power.
