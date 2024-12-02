@@ -17,8 +17,10 @@ public class DriveConstants {
     public static double INTAKE_CLAW_CLOSE = 0.3;
 
     //intake turn
-    public static double NORMAL_POSITION = 0;
-    public static double TURN_POSITION = 0.25;
+    public static double NORMAL_POSITION_RIGHT = 0;
+    public static double NORMAL_POSITION_LEFT = -0;
+    public static double TURN_POSITION_RIGHT = 0.25;
+    public static double TURN_POSITION_LEFT = 0.25;
 
     //extension
     public static double HORIZONTAL_EXTENSION_SPEED = 1;
@@ -40,7 +42,10 @@ public class DriveConstants {
     public static int HORIZONTAL_WIGGLE_ROOM = 10;
 
     public static double ARM_MOVE_DELAY = 500;
-    public static double INTAKE_FLIP_DELAY = 500;
+    public static double ARM_CLOSE_DELAY = 500;
+    public static double INTAKE_OPEN_DELAY = 500;
+    public static double ARM_MOVE_DELAY2 = 500;
+    public static double INTAKE_MOVE_DELAY = 500;
 
     //stuff i dont know
     public static double START_POSITION = 0;

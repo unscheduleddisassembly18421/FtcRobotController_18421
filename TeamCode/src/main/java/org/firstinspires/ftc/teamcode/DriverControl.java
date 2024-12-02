@@ -3,7 +3,9 @@ package org.firstinspires.ftc.teamcode;
 
 //import com.acmerobotics.dashboard.FtcDashboard;
 //import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import static org.firstinspires.ftc.teamcode.DriveConstants.ARM_CLOSE_DELAY;
 import static org.firstinspires.ftc.teamcode.DriveConstants.ARM_MOVE_DELAY;
+import static org.firstinspires.ftc.teamcode.DriveConstants.ARM_MOVE_DELAY2;
 import static org.firstinspires.ftc.teamcode.DriveConstants.ARM_TRANSFER_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.CLAW_CLOSED_POSITION;
 
@@ -13,7 +15,8 @@ import static org.firstinspires.ftc.teamcode.DriveConstants.HORIZONTAL_EXTENSION
 import static org.firstinspires.ftc.teamcode.DriveConstants.HORIZONTAL_WIGGLE_ROOM;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_CLAW_CLOSE;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_CLAW_OPEN;
-import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_FLIP_DELAY;
+import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_MOVE_DELAY;
+import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_OPEN_DELAY;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.LOW_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.TRANSFER_POSITION;
@@ -265,36 +268,38 @@ public class DriverControl extends OpMode
                 //bring the horizontal extension and the vertical extension into transfer position
                 //TODO - will this cause a conflict if they arrive simultaneously?
                 verticalTarget = LOW_POSITION;
+                int verticalCurrentPosition = robot.verticalExtension.getCurrentPosition();
                 horizontalTarget = EXTENSION_RECTRACT_POSITION; //no need to set these, as it is done outside switch
-                if (Math.abs(verticalTarget-robot.verticalExtension.getCurrentPosition())<VERTICAL_WIGGLE_ROOM &&
-                    Math.abs(horizontalTarget-robot.extension.getCurrentPosition())<HORIZONTAL_WIGGLE_ROOM){
+                int horizontalCurrentPosition = robot.extension.getCurrentPosition();
+                if (Math.abs(verticalTarget-verticalCurrentPosition)<VERTICAL_WIGGLE_ROOM &&
+                    Math.abs(horizontalTarget-horizontalCurrentPosition)<HORIZONTAL_WIGGLE_ROOM){
                     //this will wait for the extensions to move.
                     robot.open_claw();
-                    robot.arm.setPosition(ARM_TRANSFER_POSITION);
+                    robot.transfer();
                     transferClock.reset();
                     transfer = Transfer.TRANSFER_ARM_MOVE;
                     //bring moving the arm to transfer position with claw open
                 }
 
-                //move the intake into intake transfer position
-
-                //close the arm claw
-
-                //open the intake claw
-
-                //move the intake out of the way
-
-                //move the arm into horizontal position
                 break;
             case TRANSFER_ARM_MOVE:
                 if (transferClock.milliseconds()>ARM_MOVE_DELAY){
-                    robot.intakeFlip.setPosition(INTAKE_POSITION); //TODO is this the right position?
-                    //move intake to "transfer" position?
+                    robot.armTransfer(); //TODO is this the right position?
+                    //move arm to "transfer" position?
                 }
-                if (transferClock.milliseconds()>ARM_MOVE_DELAY+INTAKE_FLIP_DELAY){
+                if (transferClock.milliseconds()>ARM_MOVE_DELAY+ARM_CLOSE_DELAY){
                     //I am adding these delays so that they happen in order.  Might be annoying to tune the times.
-                    robot.armClaw.setPosition(CLAW_CLOSED_POSITION);
+                    robot.close_claw();
                     //close arm claw
+                }
+                if (transferClock.milliseconds()>ARM_MOVE_DELAY+ARM_CLOSE_DELAY+INTAKE_OPEN_DELAY){
+                    robot.intake_open();//opens the intake claw
+                }
+                if (transferClock.milliseconds()>ARM_MOVE_DELAY+ARM_CLOSE_DELAY+INTAKE_OPEN_DELAY+ARM_MOVE_DELAY2){
+                    robot.vertical();// move the arm to vertical position
+                }
+                if (transferClock.milliseconds()>ARM_MOVE_DELAY+ARM_CLOSE_DELAY+INTAKE_OPEN_DELAY+ARM_MOVE_DELAY2+INTAKE_MOVE_DELAY){
+                    robot.intake();//flip the intake to the intake position
                 }
 
                 break;
@@ -309,7 +314,8 @@ public class DriverControl extends OpMode
         Drawing.drawRobot(packet.fieldOverlay(), robot.drive.pose);
         FtcDashboard.getInstance().sendTelemetryPacket(packet);
         // telemetry.addData("claw position", robot.claw.getPosition());
-        telemetry.addData("intake flip position", robot.intakeFlip.getPosition());
+        telemetry.addData("intake Right flip position", robot.intakeRight.getPosition());
+        telemetry.addData("intake Left flip position", robot.intakeLeft.getPosition());
         //telemetry.addData("arm position", robot.arm.getPosition());
         // something i came up with
         /*

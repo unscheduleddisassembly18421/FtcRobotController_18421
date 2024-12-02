@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.DriveConstants.ARM_TRANSFER_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.CLAW_CLOSED_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.CLAW_OPEN_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.EXTENSION_RECTRACT_POSITION;
@@ -9,9 +10,11 @@ import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_CLAW_CLOSE;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_CLAW_OPEN;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.LOW_POSITION;
-import static org.firstinspires.ftc.teamcode.DriveConstants.NORMAL_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.NORMAL_POSITION_LEFT;
+import static org.firstinspires.ftc.teamcode.DriveConstants.NORMAL_POSITION_RIGHT;
 import static org.firstinspires.ftc.teamcode.DriveConstants.TRANSFER_POSITION;
-import static org.firstinspires.ftc.teamcode.DriveConstants.TURN_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.TURN_POSITION_LEFT;
+import static org.firstinspires.ftc.teamcode.DriveConstants.TURN_POSITION_RIGHT;
 import static org.firstinspires.ftc.teamcode.DriveConstants.VERTICAL_EXTENSION_SPEED;
 import static org.firstinspires.ftc.teamcode.DriveConstants.VERTICAL_POSITION;
 import static org.firstinspires.ftc.teamcode.SimpleExamples.TwoWheelDriveConstants.MAX_SPEED;
@@ -44,8 +47,8 @@ public class HardwareRobot {
     public DcMotor extension = null;
     public DcMotor verticalExtension = null;
     public Servo intakeClaw = null;
-    public Servo intakeFlip = null;
-    public Servo intakeTurn = null;
+    public Servo intakeRight = null;
+    public Servo intakeLeft = null;
     public Servo arm = null;
     public Servo armClaw = null;
 
@@ -75,15 +78,15 @@ public class HardwareRobot {
         //set directions of all motors and servos
         extension.setDirection(DcMotor.Direction.FORWARD);
         verticalExtension.setDirection(DcMotor.Direction.REVERSE);
-        intakeFlip.setDirection(Servo.Direction.FORWARD);
+        intakeRight.setDirection(Servo.Direction.FORWARD);
         intakeClaw.setDirection(Servo.Direction.REVERSE);
-        intakeTurn.setDirection(Servo.Direction.FORWARD);
+        intakeLeft.setDirection(Servo.Direction.FORWARD);
         arm.setDirection(Servo.Direction.FORWARD);
         armClaw.setDirection(Servo.Direction.REVERSE);
 
         //set the initial position for all servos
         armClaw.setPosition(CLAW_CLOSED_POSITION);
-        intakeFlip.setPosition(TRANSFER_POSITION);
+        intakeRight.setPosition(TRANSFER_POSITION);
         arm.setPosition(HORIZONTAL_POSITION);
 
 
@@ -144,22 +147,29 @@ public class HardwareRobot {
         arm.setPosition(HORIZONTAL_POSITION);
     }
 
+    public void armTransfer() {arm.setPosition(ARM_TRANSFER_POSITION);}
+
     //intake flip
     public void transfer(){
-        intakeFlip.setPosition(TRANSFER_POSITION);
+        intakeRight.setPosition(TRANSFER_POSITION);
+        intakeLeft.setPosition(TRANSFER_POSITION);
     }
 
     public void intake(){
-        intakeFlip.setPosition(INTAKE_POSITION);
+        intakeRight.setPosition(INTAKE_POSITION);
+        intakeRight.setPosition(INTAKE_POSITION);
     }
 
     //intake turn
     public void normal(){
-        intakeTurn.setPosition(NORMAL_POSITION);
+        intakeLeft.setPosition(NORMAL_POSITION_LEFT);
+        intakeRight.setPosition(NORMAL_POSITION_RIGHT);
+
     }
 
     public void turned(){
-        intakeTurn.setPosition(TURN_POSITION);
+        intakeLeft.setPosition(TURN_POSITION_LEFT);
+        intakeRight.setPosition(TURN_POSITION_RIGHT);
     }
 
 }
