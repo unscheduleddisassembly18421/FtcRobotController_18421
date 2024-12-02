@@ -6,9 +6,9 @@ import static org.firstinspires.ftc.teamcode.DriveConstants.CLAW_CLOSED_POSITION
 import static org.firstinspires.ftc.teamcode.DriveConstants.CLAW_OPEN_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.EXTENSION_SPEED;
 import static org.firstinspires.ftc.teamcode.DriveConstants.FULL_POSITION;
-import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_SPEED;
-import static org.firstinspires.ftc.teamcode.DriveConstants.TRANSFER_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_START;
+import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_TEST_FLIP;
 
 import androidx.annotation.NonNull;
 
@@ -22,6 +22,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
@@ -41,8 +42,8 @@ public class HardwareRobotAuto {
     public DcMotor verticalExtension = null;
     public DcMotor horizontalExtension = null;
     public Servo intakeFlip = null;
-    public Servo intakeTurn = null;
-    public Servo intake = null;
+    public Servo intakeClockWise;
+    public Servo intakeAntiClockWise;
     public Servo armClaw = null;
     public Servo arm = null;
     public Servo intakeClaw = null;
@@ -63,18 +64,20 @@ public class HardwareRobotAuto {
         allHubs = hardwareMap.getAll(LynxModule.class);
         horizontalExtension = hardwareMap.get(DcMotor.class, "horizontalExtension");
         verticalExtension = hardwareMap.get(DcMotor.class, "verticalExtension");
+        intakeClockWise = hardwareMap.get(Servo.class,"intakeClockWise");
+        intakeAntiClockWise = hardwareMap.get(Servo.class,"intakeAntiClockWise");
         // add the config for servos when ready :))
         //set directions of all motors and servos
         horizontalExtension.setDirection(DcMotor.Direction.FORWARD);
         verticalExtension.setDirection(DcMotor.Direction.FORWARD);
         intakeFlip.setDirection(Servo.Direction.FORWARD);
         intakeClaw.setDirection(Servo.Direction.FORWARD);
-
+        intakeClockWise.setDirection(Servo.Direction.FORWARD);
+        intakeAntiClockWise.setDirection(Servo.Direction.REVERSE);
 
         //set the initial position for all servos
-
-
-
+        intakeClockWise.setPosition(INTAKE_START);
+        intakeAntiClockWise.setPosition(INTAKE_START);
         //Set motor behavior
 
 
@@ -117,6 +120,20 @@ public class HardwareRobotAuto {
             intakeClaw.setPosition(CLAW_OPEN_POSITION);
             return false;
         }
+    }
+    public class intakeFlip180 implements Action {
+        ElapsedTime intakeClock = new ElapsedTime();
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            intakeClockWise.setPosition(INTAKE_TEST_FLIP);
+            intakeAntiClockWise.setPosition(INTAKE_TEST_FLIP);
+            return intakeClock.milliseconds()<500; //false;
+        }
+    }
+
+    public Action intakeflip180(){
+        return new intakeFlip180();
     }
 
 

@@ -464,7 +464,8 @@ public class Auto extends LinearOpMode {
         if (autoSelector == AutoSelector.TEST) {
             Actions.runBlocking(
                     new SequentialAction(
-
+                            new SleepAction(1),
+                            r.intakeflip180()
                     )
             );
         } else if (autoSelector == AutoSelector.TEST2) {
