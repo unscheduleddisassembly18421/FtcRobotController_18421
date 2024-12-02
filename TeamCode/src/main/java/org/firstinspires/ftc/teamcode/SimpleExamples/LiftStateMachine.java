@@ -105,15 +105,15 @@ public class LiftStateMachine extends OpMode {
         }
 
         if (UP_PRESSED){liftState = LiftState.HIGH;}
-        else if (DOWN_PRESSED){liftState = LiftState.LOW;}
+        else if (DOWN_PRESSED){
+          liftState = LiftState.LOW;}
         else {target = target + (int) (rightTrigger*FLOAT_SPEED) - (int)(leftTrigger*FLOAT_SPEED);}
-        //this above takes the current target value and either
+        //  this above takes the current target value and either
         //  adds a number if you pressed the right trigger or
         //  subtracts a number if you pressed the left trigger
         //  to raise or lower the lift.  It does not change the state though of the lift.
         break;
     }
-
 
     //This code is an example for what the code would look like if we kept accessing the gamepad rather than use helper variables.
 

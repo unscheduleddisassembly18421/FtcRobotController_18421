@@ -1,14 +1,21 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.DriveConstants.BASE_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.ARM_TRANSFER_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.CLAW_CLOSED_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.CLAW_OPEN_POSITION;
-import static org.firstinspires.ftc.teamcode.DriveConstants.EXTENSION_SPEED;
-import static org.firstinspires.ftc.teamcode.DriveConstants.FULL_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.EXTENSION_RECTRACT_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.HORIZONTAL_EXTENSION_SPEED;
 import static org.firstinspires.ftc.teamcode.DriveConstants.HORIZONTAL_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_CLAW_CLOSE;
+import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_CLAW_OPEN;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_POSITION;
-import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_SPEED;
+import static org.firstinspires.ftc.teamcode.DriveConstants.LOW_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.NORMAL_POSITION_LEFT;
+import static org.firstinspires.ftc.teamcode.DriveConstants.NORMAL_POSITION_RIGHT;
 import static org.firstinspires.ftc.teamcode.DriveConstants.TRANSFER_POSITION;
+import static org.firstinspires.ftc.teamcode.DriveConstants.TURN_POSITION_LEFT;
+import static org.firstinspires.ftc.teamcode.DriveConstants.TURN_POSITION_RIGHT;
+import static org.firstinspires.ftc.teamcode.DriveConstants.VERTICAL_EXTENSION_SPEED;
 import static org.firstinspires.ftc.teamcode.DriveConstants.VERTICAL_POSITION;
 import static org.firstinspires.ftc.teamcode.SimpleExamples.TwoWheelDriveConstants.MAX_SPEED;
 import static org.firstinspires.ftc.teamcode.SimpleExamples.TwoWheelDriveConstants.SLOW_MODE_SPEED;
@@ -40,8 +47,8 @@ public class HardwareRobot {
     public DcMotor extension = null;
     public DcMotor verticalExtension = null;
     public Servo intakeClaw = null;
-    public Servo intakeFlip = null;
-    public Servo intakeTurn = null;
+    public Servo intakeRight = null;
+    public Servo intakeLeft = null;
     public Servo arm = null;
     public Servo armClaw = null;
 
@@ -57,42 +64,47 @@ public class HardwareRobot {
     public HardwareRobot(Telemetry telemetry, HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
-        drive = new MecanumDrive(hardwareMap,startPose);
+
+        /*drive = new MecanumDrive(hardwareMap,startPose);
         allHubs = hardwareMap.getAll(LynxModule.class);
-        /*
         extension = hardwareMap.get(DcMotor.class,"extension");    //CH Port
         verticalExtension = hardwareMap.get(DcMotor.class,"verticalExtension");
         intakeClaw = hardwareMap.get(Servo.class, "intakeClaw");
         intakeFlip = hardwareMap.get(Servo.class, "intakeFlip");
         intakeTurn = hardwareMap.get(Servo.class, "intakeTurn");
         arm = hardwareMap.get(Servo.class,"arm");
-        armClaw = hardwareMap.get(Servo.class, "armClaw");
-*/
+        armClaw = hardwareMap.get(Servo.class, "armClaw");*/
+
         //set directions of all motors and servos
         extension.setDirection(DcMotor.Direction.FORWARD);
         verticalExtension.setDirection(DcMotor.Direction.REVERSE);
-        intakeFlip.setDirection(Servo.Direction.FORWARD);
+        intakeRight.setDirection(Servo.Direction.FORWARD);
         intakeClaw.setDirection(Servo.Direction.REVERSE);
-        intakeTurn.setDirection(Servo.Direction.FORWARD);
+        intakeLeft.setDirection(Servo.Direction.FORWARD);
         arm.setDirection(Servo.Direction.FORWARD);
         armClaw.setDirection(Servo.Direction.REVERSE);
 
         //set the initial position for all servos
         armClaw.setPosition(CLAW_CLOSED_POSITION);
-        intakeFlip.setPosition(TRANSFER_POSITION);
+        intakeRight.setPosition(TRANSFER_POSITION);
         arm.setPosition(HORIZONTAL_POSITION);
-        //TEST THE CHANGE
+
 
         //Set motor behavior
         extension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
         extension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        extension.setTargetPosition(BASE_POSITION);
+        extension.setTargetPosition(EXTENSION_RECTRACT_POSITION);
         extension.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        extension.setPower(EXTENSION_SPEED);
+        extension.setPower(HORIZONTAL_EXTENSION_SPEED);
 
-
+        //TODO NEED Vertical Extension version here.
+        verticalExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //etc.
+        verticalExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        verticalExtension.setTargetPosition(LOW_POSITION);
+        verticalExtension.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        verticalExtension.setPower(VERTICAL_EXTENSION_SPEED);
 
 
         //a specific piece of code used for "bulk reads".  Read gm0 for more info on Bulk Reads.
@@ -107,16 +119,7 @@ public class HardwareRobot {
 
     }
 
-    //extension
-    public void retract(){
-        extension.setTargetPosition(BASE_POSITION);
-    }
-
-    public void extension(){
-        extension.setTargetPosition(FULL_POSITION);
-    }
-
-    //claw
+    //arm claw
     public void close_claw(){
         armClaw.setPosition(CLAW_CLOSED_POSITION);
     }
@@ -125,56 +128,48 @@ public class HardwareRobot {
         armClaw.setPosition(CLAW_OPEN_POSITION);
     }
 
+    //intake claw
+    public void intake_open(){
+        intakeClaw.setPosition(INTAKE_CLAW_OPEN);
+    }
+
+    public void intake_close(){
+        intakeClaw.setPosition(INTAKE_CLAW_CLOSE);
+    }
+
+
     //arm
-    //TODO sorry about commenting this much i just dont know what to do
-
-    public void dock(){
-    //    arm.setPosition(DOCK_POSITION);
-    }
-
     public void vertical(){
-    //    arm.setPosition(VERTICAL_POSITION);
+        arm.setPosition(VERTICAL_POSITION);
     }
 
-    public void align(){
-    //    arm.setPosition(ALIGN_POSITION);
+    public void horizontal(){
+        arm.setPosition(HORIZONTAL_POSITION);
     }
 
-    public void dunk() {
-    //    arm.setPosition(DUNK_POSITION);
-    }
-
-
+    public void armTransfer() {arm.setPosition(ARM_TRANSFER_POSITION);}
 
     //intake flip
     public void transfer(){
-        intakeFlip.setPosition(TRANSFER_POSITION);
+        intakeRight.setPosition(TRANSFER_POSITION);
+        intakeLeft.setPosition(TRANSFER_POSITION);
     }
 
     public void intake(){
-        intakeFlip.setPosition(INTAKE_POSITION);
+        intakeRight.setPosition(INTAKE_POSITION);
+        intakeRight.setPosition(INTAKE_POSITION);
     }
 
-    public void reverseIntake(){
-       // intake.setDirection(DcMotor.Direction.FORWARD);
-    }
-    public void forwardIntake(){
-       // intake.setDirection(DcMotor.Direction.REVERSE);
+    //intake turn
+    public void normal(){
+        intakeLeft.setPosition(NORMAL_POSITION_LEFT);
+        intakeRight.setPosition(NORMAL_POSITION_RIGHT);
+
     }
 
-    //intake
-    public void nomnom(){
-       // intake.setPower(INTAKE_SPEED);
+    public void turned(){
+        intakeLeft.setPosition(TURN_POSITION_LEFT);
+        intakeRight.setPosition(TURN_POSITION_RIGHT);
     }
-
-    public void nomnomStop(){
-     //   intake.setPower(0);
-    }
-
-    public void extend(double power){
-       // leftExtension.setPower(power);
-       // rightExtension.setPower(power);
-    }
-
 
 }
