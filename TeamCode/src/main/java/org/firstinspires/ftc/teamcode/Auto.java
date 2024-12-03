@@ -26,7 +26,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *      - press left bumper to toggle between having a specimen at the beginning or sample
  */
 @Config
-
 @Autonomous(name = "Autonomous_2024-2025")
 public class Auto extends LinearOpMode {
 

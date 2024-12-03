@@ -53,7 +53,6 @@ public class DriveConstants {
 
     //stuff i dont know
     public static double START_POSITION = 0;
-    public static double ARM_TRANSFER_POSITION = 0.5;
     public static double GRAB_AND_SCORE_POSITION = 1;
 
 

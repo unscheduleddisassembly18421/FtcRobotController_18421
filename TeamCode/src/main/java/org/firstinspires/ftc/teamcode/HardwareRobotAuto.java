@@ -1,11 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 
-import static org.firstinspires.ftc.teamcode.DriveConstants.BASE_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.CLAW_CLOSED_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.CLAW_OPEN_POSITION;
-import static org.firstinspires.ftc.teamcode.DriveConstants.EXTENSION_SPEED;
-import static org.firstinspires.ftc.teamcode.DriveConstants.FULL_POSITION;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_SPEED;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_START;
 import static org.firstinspires.ftc.teamcode.DriveConstants.INTAKE_TEST_FLIP;
